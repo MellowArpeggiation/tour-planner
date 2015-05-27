@@ -52,6 +52,8 @@ function initialize() {
 	initPlanTour();
 	initAttractions();
 	initHotels();
+	
+	loadTrip();
 }
 
 function initPlanTour() {
@@ -67,6 +69,7 @@ function initPlanTour() {
 			userLocation = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
 			map.setCenter(userLocation);
 			map.setZoom(reasonableZoom);
+			$("#set-location").show();
 		}, function () {
 			console.log("Geolocation service failed");
 		});
@@ -412,10 +415,18 @@ function setRoundTrip(button) {
 	calculateRoute();
 }
 
+function setCurrentLocation() {
+	
+}
+
 /** Save and load the trip at the beginning and end of each session, 
 	Save/load buttons are not user friendly **/
 function saveTrip() {
-	
+	if (typeof (Storage) !== "undefined") {
+		console.log("localStorage works!");
+	} else {
+		console.log("localStorage not supported by browser");
+	}
 }
 
 function loadTrip() {
@@ -440,10 +451,14 @@ function changeTab(tabName) {
 function notifyUser(title, text, type) {
 	// Can't do multiline strings apparently?
 	var html = "<div class='alert alert-" + type + " alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>" + title + "</strong> " + text + "</div>";
-	$("#popup-container").append(html);
+	$("#popup-container").html(html);
 }
 
 function removeNotifications() {
 	$("#popup-container").html("");
 }
 
+$(window).on("beforeunload", function() {
+	saveTrip();
+	return "Testing Saving";
+});

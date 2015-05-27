@@ -121,6 +121,11 @@
 								<label for="start-location" class="hidden-xs">Overall Travel Plan</label>
 								<div class="form-group">
 									<div class="input-group">
+										<span class="input-group-btn" id="set-location" style="display: none;">
+											<button type="button" class="btn btn-default" onclick="setCurrentLocation()" ontouchend="setCurrentLocation()">
+												<span class="glyphicon glyphicon-screenshot"></span>
+											</button>
+										</span>
 										<input id="start-location" name="start-location" class="form-control" placeholder="Start Location" type="text" />
 										<span class="input-group-btn">
 											<button type="button" class="btn btn-default" aria-pressed="false" data-toggle="button" autocomplete="off" onclick="setRoundTrip(this)" ontouchend="setRoundTrip(this)" name="isRoundTrip">
