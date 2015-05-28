@@ -551,7 +551,7 @@ function saveTrip() {
 	}
 }
 
-setInterval(saveTrip, 10000);
+setInterval(saveTrip, 5000);
 
 function loadTrip() {
 	if (typeof (Storage) !== "undefined") {
