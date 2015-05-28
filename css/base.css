@@ -106,11 +106,6 @@ input[type="date"], input[type="time"], input[type="datetime-local"], input[type
 	line-height: 1.42857143;
 }
 
-.scrollable-table {
-	max-height: 322px;
-	overflow-y: auto;
-}
-
 button > .button-poptext {
 	display: none;
 }
@@ -191,22 +186,10 @@ button:hover > .button-poptext {
   top: 70px;
   width: 213px;
 }
- 
-@media (min-width: 1200px) {
-  .affix {
-    width: 263px;
-  }         
-}
 
 .affix-bottom {
   position: absolute;
   width: 213px;
-}
- 
-@media (min-width: 1200px) {
-  .affix-bottom {
-    width: 263px;
-  }
 }
 
 .info-button {
@@ -223,9 +206,6 @@ button:hover > .button-poptext {
 /* Screen width specific CSS */
 /** XS **/
 @media (max-width: 767px) {
-	.scrollable-table {
-		max-height: initial;
-	}
 	.map-container {
 		width: 100%;
 		height: 500px;
@@ -240,6 +220,13 @@ button:hover > .button-poptext {
 		padding-top: 50px;
 	}
 }
+/** SM+ **/
+@media (min-width: 768px) {
+	.scrollable-table {
+		height: 350px;
+		overflow-y: auto;
+	}
+}
 /** SM **/
 @media (min-width: 768px) and (max-width: 991px) {
 	
@@ -250,7 +237,12 @@ button:hover > .button-poptext {
 }
 /** LG **/
 @media (min-width: 1200px) {
-	
+	.affix {
+		width: 263px;
+	}
+	.affix-bottom {
+		width: 263px;
+	}
 }
 
 /** Screen height for mobiles CSS **/

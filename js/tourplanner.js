@@ -291,7 +291,7 @@ function generateTable(response) {
 			locationNameCell.innerHTML = currentWaypoint.name;
 			travelInfoCell.innerHTML = currentWaypoint.time + "<br />" + currentWaypoint.distance;
 			infoButtonCell.innerHTML = "<span class='glyphicon glyphicon-info-sign info-button'></span>";
-			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)'>&times;</button>";
+			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)' data-wpnum='" + waypointOrder[i] + "'>&times;</button>";
 		}
 	}
 		
@@ -325,8 +325,8 @@ function generateTable(response) {
 }
 
 function deleteAttraction(button) {
-	var row = $(button).parent().parent();
-	allWaypoints.splice(row.index(), 1);
+	var row = $(button).attr("data-wpnum");
+	allWaypoints.splice(row, 1);
 	
 	calculateRoute();
 //	setAttractionMarkers();
@@ -454,7 +454,7 @@ function setTravelType(originElement) {
 	});
 	if (travelType === "transit") {
 		$(originElement).attr("class", "btn btn-warning");
-		notifyUser("<span class='glyphicon glyphicon-warning-sign'></span> Experimental Transit.", "This travel mode is experimental and subject to change by Google", "warning");
+		notifyUser("Experimental Transit.", "This travel mode is experimental and subject to change by Google", "warning");
 	} else {
 		$(originElement).attr("class", "btn btn-success");
 		removeNotifications();
@@ -641,7 +641,7 @@ function changeTab(tabName) {
 /** type includes success, info, warning, danger **/
 function notifyUser(title, text, type) {
 	// Can't do multiline strings apparently?
-	var html = "<div class='alert alert-" + type + " alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong>" + title + "</strong> " + text + "</div>";
+	var html = "<div class='alert alert-" + type + " alert-dismissible' role='alert'><button type='button' class='close' data-dismiss='alert' aria-label='Close'><span aria-hidden='true'>&times;</span></button><strong><span class='glyphicon glyphicon-" + type + "-sign'></span> " + title + "</strong> " + text + "</div>";
 	$("#popup-container").html(html);
 }
 
