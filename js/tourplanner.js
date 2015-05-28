@@ -7,7 +7,9 @@
 // Function list
 /*global initialize, geocodeAddress, setMapViewport, calculateRoute,
 	generateTable, setAttractionMarkers, notifyUser, removeNotifications,
-	initPlanTour, initAttractions, initHotels, loadTrip, saveTrip*/
+	initPlanTour, initAttractions, initHotels, loadTrip, saveTrip,
+	calculateTotalDistance, setTimeTable, getPlacesArray, getStartTime,
+	timeCalculation, findPlaceIdAndName*/
 
 // Initialised in mapproperties.js
 /*global reasonableZoom, mapProperties*/
@@ -16,12 +18,31 @@
 var geocoder,
 	directionsDisplay,
 	directionsService,
+	placesService,
 	map;
 
 // Variables for 'autocomplete' on the start and end location text boxes
 var startLocation,
 	endLocation,
 	userLocation;
+
+// variables for displaying information on start and end locations
+var startLocationName,
+	startLocationId,
+	endLocationName,
+	endLocationId;
+
+// constant for time when hotel must be found
+var lateTime = 20;
+// constant for time when leaving the hotel
+var earlyTime = 9;
+// constant for duration of visiting places (1h - 60mins)
+var visitingTime = 60;
+
+var departureDateTime = null;
+
+var placesAndHotels = [];
+var timeTable = [];
 
 var userMarker;
 
@@ -83,7 +104,10 @@ function initPlanTour() {
 	// Prepare directions API
 	directionsDisplay = new google.maps.DirectionsRenderer();
 	directionsService = new google.maps.DirectionsService();
-
+	
+	// Prepare places API
+	placesService = new google.maps.places.PlacesService(map);
+	
 	//Initialise Geocoder object
 	geocoder = new google.maps.Geocoder();
 
@@ -317,6 +341,10 @@ function calculateRoute() {
 		directionsService.route(request, function (response, status) {
 			if (status === google.maps.DirectionsStatus.OK) {
 				directionsDisplay.setDirections(response);
+				
+				calculateTotalDistance(response);
+				setTimeTable(response);
+				getPlacesArray(response);
 			}
 		});
 	} else if (startLocation != undefined && isLooping) {
@@ -331,6 +359,10 @@ function calculateRoute() {
 		directionsService.route(request, function (response, status) {
 			if (status === google.maps.DirectionsStatus.OK) {
 				directionsDisplay.setDirections(response);
+				
+				calculateTotalDistance(response);
+				setTimeTable(response);
+				getPlacesArray(response);
 			}
 		});
 	} else {
@@ -561,3 +593,233 @@ function removeNotifications() {
 $(window).on("beforeunload", function () {
 	saveTrip();
 });
+
+/** Parameter = location
+	sort by rating specified on the third tab
+**/
+function findNearbyHotel() {
+	var request;
+
+	request = {
+		location: startLocation,
+		types: ['lodging'],
+		rankBy: google.maps.places.RankBy.DISTANCE
+	};
+
+	placesService.nearbySearch(request, function (result, status) {
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			
+		}
+	});
+}
+
+function getPlaceInfo(id) {
+	var request,
+		attractionImage;
+	
+	request = {
+		placeId: id
+	};
+
+	placesService.getDetails(request, function (place, status) {
+		if (status == google.maps.places.PlacesServiceStatus.OK) {
+			if (place.photos != null) {
+				attractionImage.src = place.photos[0].getUrl({
+					'maxWidth': 200,
+					'maxHeight': 200
+				});
+			}
+			if (place.name != null) {
+				$('#attractionDetailsName').text(place.name);
+			}
+			if (place.formatted_address != null) {
+				$('#attractionDetailsAddress').text(place.formatted_address);
+			}
+			if (place.formatted_phone != null) {
+				$('#attractionDetailsPhone').text(place.formatted_phone);
+			}
+			if (place.opening_hours != null && place.weekday_text != null) {
+				$('#attractionDetailsOpeningHours').text(place.weekday_text[0] + place.weekday_text[1] + place.weekday_text[2]);
+			}
+			if (place.rating != null) {
+				$('#attractionDetailsRating').text(place.rating);
+			}
+			if (place.website != null) {
+				$('#attractionDetailsWebsite').text(place.website);
+			}
+		}
+	});
+}
+
+function calculateTotalDistance(response) {
+	var totalDistance = 0,
+		i;
+	for (i = 0; i < response.routes[0].legs.length; i += 1) {
+		totalDistance = totalDistance + response.routes[0].legs[i].distance.value;
+	}
+	
+	totalDistance = (totalDistance / 1000).toFixed(2) + " km";
+	console.log(totalDistance);
+}
+
+function getPlacesArray(response) {
+	var allPlaces = [],
+		s_location,
+		e_location,
+		i,
+		obj,
+		exit;
+	
+	// add start location
+	s_location = {name: startLocationName, location: startLocation, id: startLocationId};
+	allPlaces.push(s_location);
+	
+	for (i = 0; i < response.routes[0].legs.length; i += 1) {
+		// find name and id in array of attractions
+		// if not found, then select name and id of destination point
+		
+		e_location = findPlaceIdAndName(response.routes[0].legs[i].end_location);
+		// add end location
+		if (e_location == null) {
+			e_location = {name: endLocationName, location: endLocation, id: endLocationId};
+		}
+		allPlaces.push(e_location);
+	}
+
+	exit = false;
+
+	while (!exit) {
+		obj = timeCalculation(0, allPlaces, response);
+		console.log(obj);
+		allPlaces = obj.list;
+		console.log("all places: ", allPlaces);
+		if (obj.index == obj.list.length - 1) {
+			exit = true;
+		}
+	}
+	
+	console.log(timeTable);
+}
+
+function getStartTime() {
+	var startTime = $('#startTime').val(),
+		startTimeFormattedDate = new Date(startTime);
+	departureDateTime = startTimeFormattedDate;
+	return startTimeFormattedDate;
+}
+
+function setTimeTable(response) {
+	var i;
+	timeTable[0] = 0;
+	
+	for (i = 0; i < response.routes[0].legs.length; i += 1) {
+		timeTable[i + 1] = response.routes[0].legs[i].duration.value;
+	}
+}
+
+function findPlaceIdAndName(location) {
+	var object = null,
+		i;
+	for (i = 0; i < addedAttractionsArray.length; i += 1) {
+	
+		if (addedAttractionsArray[i].location.A == location.A && addedAttractionsArray[i].location.F == location.F) {
+			object = {name: addedAttractionsArray[i].name, location: addedAttractionsArray[i].location, id: addedAttractionsArray[i].id};
+		}
+	}
+	return object;
+}
+
+function timeCalculation(fromWhichIndex, placeList, response) {
+	var newList = [],
+		finished = false,
+		start = getStartTime(),
+		currentDate,
+		indexFinished,
+		hours,
+		i,
+		j;
+	
+	if (departureDateTime != null) {
+		currentDate = departureDateTime;
+	} else {
+		currentDate = start;
+	}
+	
+	// if first location is not hotel already
+	if (placesAndHotels[0] != "h") {
+		// then check if start time is too late or too early
+		
+		if (currentDate.getHours() >= lateTime || currentDate.getHours() < earlyTime) {
+			newList[0] = "Hotel";
+			placesAndHotels[0] = "h";
+			for (i = 0; i < placeList.length; i += 1) {
+				newList[i + 1] = placeList[i];
+				placesAndHotels[i + 1] = "p";
+			}
+			finished = true;
+			indexFinished = 0;
+			
+		} else {
+			placesAndHotels[0] = "p";
+			newList = placeList;
+		}
+	} else {
+		newList[0] = placeList[0];
+	}
+
+	if (!finished) {
+	
+		for (i = 1; i < placeList.length; i += 1) {
+			//if finished then break and return value
+			if (finished) {
+				break;
+			}
+			if (placesAndHotels[i - 1] != "h") {
+				// if last place wasn't a hotel, add hours allocated for visiting
+				currentDate.setMinutes(currentDate.getMinutes() + timeTable[i - 1] + visitingTime);
+				timeTable[i - 1] = timeTable[i - 1] + visitingTime;
+			} else {
+				// if previous location was hotel, calculate current time 
+				hours = 0;
+				if (currentDate.getHours() >= lateTime) {
+					hours = (24 - currentDate.getHours()) + earlyTime;
+				} else if (currentDate.getHours() < earlyTime) {
+					hours = earlyTime - currentDate.getHours();
+				}
+				currentDate = currentDate.setHours(currentDate.getHours() + hours);
+				
+				timeTable[i - 1] = hours * 60 + timeTable[i - 1];
+			}
+			// checking current date
+			
+			console.log(placesAndHotels);
+
+			currentDate = new Date(currentDate);
+
+			if (currentDate.getHours() >= lateTime || currentDate.getHours() < earlyTime) {
+				// copy old list prior to current location
+				for (j = 0; j < i; j += 1) {
+					newList[j] = placeList[j];
+					placesAndHotels[j] = "p";
+				}
+				
+				newList[i] = "Hotel";
+				placesAndHotels[i] = "h";
+				
+				for (j = i + 1; j < placeList.length; j += 1) {
+					newList[j] = placeList[j];
+					placesAndHotels[j] = "p";
+				}
+				finished = true;
+				indexFinished = i;
+			} else {
+				placesAndHotels[i] = "p";
+				newList = placeList;
+				indexFinished = i;
+			}
+		}
+	}
+
+	// index is a next stop after hotel
+	return {index: indexFinished, list: newList};
+}
