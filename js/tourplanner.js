@@ -68,7 +68,10 @@ var currentLocationName,
 	currentLocation;
 
 var allWaypoints = [];
-
+var wpType = {
+	ATTRACTION: "a",
+	HOTEL: "h"
+};
 
 function initialize() {
 	initPlanTour();
@@ -121,17 +124,17 @@ function initPlanTour() {
 	// When the user selects an address from the dropdown,
 	// populate the address fields in the form.
 	// start location autocomplete event
-	google.maps.event.addListener(startAutocomplete, 'place_changed', function () {
-		geocodeAddress(document.getElementById('start-location').value, 1);
+	google.maps.event.addListener(startAutocomplete, "place_changed", function () {
+		geocodeAddress(document.getElementById("start-location").value, 1);
 	});
 
 	// destination location autocomplete event
-	google.maps.event.addListener(endAutocomplete, 'place_changed', function () {
-		geocodeAddress(document.getElementById('end-location').value, 2);
+	google.maps.event.addListener(endAutocomplete, "place_changed", function () {
+		geocodeAddress(document.getElementById("end-location").value, 2);
 	});
 	
 	// Initialise date picker for departure time
-	if (!Modernizr.inputtypes['datetime-local']  || navigator.userAgent.toLowerCase().indexOf('chrome') > -1) {
+	if (!Modernizr.inputtypes["datetime-local"]  || navigator.userAgent.toLowerCase().indexOf("chrome") > -1) {
 		$("#departure-time").datetimepicker({
 			sideBySide: true,
 			format: "D MMM YYYY h:mm a"
@@ -153,17 +156,17 @@ function initAttractions() {
 					
 	// Initialising the autocomplete objects, restricting the search
 	// to geographical location types.
-	attractionAutocomplete = new google.maps.places.Autocomplete(document.getElementById('attraction-location'), {
-		types: ['establishment'],
+	attractionAutocomplete = new google.maps.places.Autocomplete(document.getElementById("attraction-location"), {
+		types: ["establishment"],
 		componentRestrictions: {country: "aus"}
 	});
 		
 	// When the user selects an address from the dropdown,
 	// populate the address fields in the form.
 	//start location autocomplete event
-	google.maps.event.addListener(attractionAutocomplete, 'place_changed', function () {
-		currentLocationName = document.getElementById('attraction-location').value;
-		geocodeAddress(document.getElementById('attraction-location').value, 3);
+	google.maps.event.addListener(attractionAutocomplete, "place_changed", function () {
+		currentLocationName = document.getElementById("attraction-location").value;
+		geocodeAddress(document.getElementById("attraction-location").value, 3);
 		
 		$("#add-attraction").removeAttr("disabled");
 	});
@@ -233,13 +236,13 @@ function setMapViewport(arrayOfLocations) {
 function addAttraction() {
 	if (allWaypoints.length < 8) {
 		removeNotifications();
-		var location = {
+		allWaypoints.push({
 			name: currentLocationName,
 			location: currentLocation,
 			distance: "0 km",
-			time: "00:00"
-		};
-		allWaypoints.push(location);
+			time: "00:00",
+			wpType: wpType.ATTRACTION
+		});
 
 		// Clears the attractions auto complete box 
 		document.getElementById("attraction-location").value = '';
