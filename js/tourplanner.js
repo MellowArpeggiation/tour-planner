@@ -192,7 +192,9 @@ function setMapViewport(arrayOfLocations) {
 	mapBounds = new google.maps.LatLngBounds();
 	if (arrayOfLocations.length > 0) {
 		for (i = 0; i < arrayOfLocations.length; i += 1) {
-			mapBounds.extend(arrayOfLocations[i]);
+			if (arrayOfLocations[i] != null) {
+				mapBounds.extend(arrayOfLocations[i]);
+			}
 		}
 		
 		map.fitBounds(mapBounds);
@@ -204,16 +206,26 @@ function setMapViewport(arrayOfLocations) {
 }
 
 function addAttraction() {
-	var location = {name: currentLocationName, location: currentLocation};
-	addedAttractionsArray.push(location);
+	if (addedAttractionsArray.length < 8) {
+		removeNotifications();
+		var location = {
+			name: currentLocationName,
+			location: currentLocation,
+			distance: 0,
+			time: 0
+		};
+		addedAttractionsArray.push(location);
 
-	// Clears the attractions auto complete box 
-	document.getElementById("attraction-location").value = '';
-	$("#add-attraction").attr("disabled", true);
+		// Clears the attractions auto complete box 
+		document.getElementById("attraction-location").value = '';
+		$("#add-attraction").attr("disabled", true);
 
-	generateTable();
-//	setAttractionMarkers();
-	calculateRoute();
+		calculateRoute();
+		generateTable();
+		//setAttractionMarkers();
+	} else {
+		notifyUser("Maximum Waypoints Set", "You have reached the maximum amount of waypoints currently allowed: 8", "info");
+	}
 }
 
 function generateTable() {
@@ -256,9 +268,9 @@ function deleteAttraction(button) {
 	var row = $(button).parent().parent();
 	addedAttractionsArray.splice(row.index(), 1);
 	
+	calculateRoute();
 	generateTable();
 //	setAttractionMarkers();
-	calculateRoute();
 }
 
 function shareRoute() {
@@ -446,8 +458,8 @@ function saveTrip() {
 		localStorage.setItem("attractions", JSON.stringify(addedAttractionsArray));
 		
 		// Start and End locations
-		localStorage.setItem("start-latlng", startLocation);
-		localStorage.setItem("end-latlng", endLocation);
+		localStorage.setItem("start-latlng", JSON.stringify(startLocation));
+		localStorage.setItem("end-latlng", JSON.stringify(endLocation));
 		
 		localStorage.setItem("has-saved", true);
 	} else {
@@ -467,6 +479,8 @@ function loadTrip() {
 			roundTripButton,
 			currentTravelButton,
 			currentRatingButton,
+			currentLatLng,
+			currentLatLngParsed,
 			i;
 		
 		// All inputs with an ID loaded
@@ -504,14 +518,18 @@ function loadTrip() {
 		
 		// Start and End locations
 		if (localStorage.getItem("start-latlng") != "undefined") {
-			startLocation = localStorage.getItem("start-latlng");
+			currentLatLng = JSON.parse(localStorage.getItem("start-latlng"));
+			
+			startLocation = new google.maps.LatLng(currentLatLng.A, currentLatLng.F);
 		}
 		if (localStorage.getItem("end-latlng") != "undefined") {
-			endLocation = localStorage.getItem("end-latlng");
+			currentLatLng = JSON.parse(localStorage.getItem("end-latlng"));
+			
+			endLocation = new google.maps.LatLng(currentLatLng.A, currentLatLng.F);
 		}
 		
-		generateTable();
 		calculateRoute();
+		generateTable();
 	} else {
 		console.log("localStorage not supported by browser");
 	}
