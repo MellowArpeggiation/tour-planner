@@ -544,10 +544,14 @@ function saveTrip() {
 		localStorage.setItem("end-latlng", JSON.stringify(endLocation));
 		
 		localStorage.setItem("has-saved", true);
+		
+		console.log("Saving successful");
 	} else {
 		return "Your tour plan can not be saved";
 	}
 }
+
+setInterval(saveTrip, 10000);
 
 function loadTrip() {
 	if (typeof (Storage) !== "undefined") {
