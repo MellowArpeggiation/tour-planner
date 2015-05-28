@@ -110,7 +110,7 @@
 					</div>
 				</div>
 				<div class="col-sm-6 col-md-5 col-lg-4">
-					<div role="tabpanel">
+					<form role="tabpanel" name="tour-form">
 
 						<!-- Tab panes -->
 						<div class="tab-content">
@@ -128,7 +128,7 @@
 										</span>
 										<input id="start-location" name="start-location" class="form-control" placeholder="Start Location" type="text" />
 										<span class="input-group-btn">
-											<button type="button" class="btn btn-default" aria-pressed="false" data-toggle="button" autocomplete="off" onclick="setRoundTrip(this)" ontouchend="setRoundTrip(this)" name="isRoundTrip">
+											<button type="button" class="btn btn-default" aria-pressed="false" data-toggle="button" autocomplete="off" onclick="setRoundTrip(this)" ontouchend="setRoundTrip(this)" name="round-trip" id="round-trip">
 												<span class="glyphicon glyphicon-repeat"></span>
 											</button>
 										</span>
@@ -141,16 +141,16 @@
 									<label for="travel-mode" class="hidden-xs">Travel Mode</label>
 									<div class="btn-group btn-group-justified" id="travel-mode" role="group">
 										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-default" onclick="setTravelType(this, 'driving')" ontouchend="setTravelType(this, 'driving')">Driving</button>
+											<button type="button" class="btn btn-default" name="driving" onclick="setTravelType(this)" ontouchend="setTravelType(this)">Driving</button>
 										</div>
 										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-success" onclick="setTravelType(this, 'walking')" ontouchend="setTravelType(this, 'walking')">Walking</button>
+											<button type="button" class="btn btn-success" name="walking" onclick="setTravelType(this)" ontouchend="setTravelType(this)">Walking</button>
 										</div>
 										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-default" onclick="setTravelType(this, 'cycling')" ontouchend="setTravelType(this, 'cycling')">Cycling</button>
+											<button type="button" class="btn btn-default" name="cycling" onclick="setTravelType(this)" ontouchend="setTravelType(this)">Cycling</button>
 										</div>
 										<div class="btn-group" role="group">
-											<button type="button" class="btn btn-default" onclick="setTravelType(this, 'transit')" ontouchend="setTravelType(this, 'transit')">Transit</button>
+											<button type="button" class="btn btn-default" name="transit" onclick="setTravelType(this)" ontouchend="setTravelType(this)">Transit</button>
 										</div>
 									</div>
 									<input type="hidden" id="travel-mode" name="travel-mode"></input>
@@ -161,7 +161,7 @@
 										<span class="input-group-addon">
 											<span class="glyphicon glyphicon-calendar"></span>
 										</span>
-										<input type="text" class="form-control" placeholder="Enter a Date" name="departure-time" />
+										<input type="text" class="form-control" placeholder="Enter a Date" name="departure-time" id="departure-time" />
 									</div>
 								</div>
 							</div>
@@ -191,7 +191,7 @@
 									<label for="duration">Duration of Tour</label>
 									<div class="input-group">
 										<input id="duration" type="tel" name="duration" class="form-control" placeholder="Duration" />
-										<span class="input-group-addon">days</span>
+										<span class="input-group-addon">Minimum <span id="min-days">0</span> days</span>
 									</div>
 								</div>
 								<div class="form-group">
@@ -250,7 +250,7 @@
 								</div>
 							</div>
 						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</div>

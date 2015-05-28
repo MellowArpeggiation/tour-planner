@@ -7,7 +7,7 @@
 // Function list
 /*global initialize, geocodeAddress, setMapViewport, calculateRoute,
 	generateTable, setAttractionMarkers, notifyUser, removeNotifications,
-	initPlanTour, initAttractions, initHotels*/
+	initPlanTour, initAttractions, initHotels, loadTrip, saveTrip*/
 
 // Initialised in mapproperties.js
 /*global reasonableZoom, mapProperties*/
@@ -147,7 +147,15 @@ function initAttractions() {
 }
 
 function initHotels() {
-	$("#cost-range").slider({});
+	// Set cost slider
+	if (typeof (Storage) !== "undefined" && localStorage.getItem("has-saved")) {
+		var costRange = localStorage.getItem("cost-range").split(",");
+		$("#cost-range").slider({
+			value: [parseInt(costRange[0], 10), parseInt(costRange[1], 10)]
+		});
+	} else {
+		$("#cost-range").slider({});
+	}
 	
 	$("#cost-range").on("slide", function (slideEvt) {
 		$("#cost-min").text("$" + slideEvt.value[0]);
@@ -281,7 +289,6 @@ function calculateRoute() {
 	
 	// Calculate and draw directions
 	for (i = 0; i < addedAttractionsArray.length; i += 1) {
-		console.log(addedAttractionsArray[i].location);
 		waypoints.push({
 			location: addedAttractionsArray[i].location,
 			stopover: true
@@ -322,10 +329,10 @@ function calculateRoute() {
 	
 	// Set the maps view
 	allLocations = [];
-	if (startLocation != undefined) {
+	if (startLocation != undefined && endLocation != "null") {
 		allLocations.push(startLocation);
 	}
-	if (endLocation != undefined) {
+	if (endLocation != undefined && endLocation != "null") {
 		allLocations.push(endLocation);
 	}
 	for (i = 0; i < addedAttractionsArray.length; i += 1) {
@@ -355,12 +362,12 @@ function calculateRoute() {
 	}
 }*/
 
-function setTravelType(originElement, newTravelType) {
-	travelType = newTravelType;
+function setTravelType(originElement) {
+	travelType = originElement.name;
 	$("#travel-mode>.btn-group").each(function () {
 		$(this).children().first().attr("class", "btn btn-default");
 	});
-	if (newTravelType === "transit") {
+	if (travelType === "transit") {
 		$(originElement).attr("class", "btn btn-warning");
 		notifyUser("<span class='glyphicon glyphicon-warning-sign'></span> Experimental Transit.", "This travel mode is experimental and subject to change by Google", "warning");
 	} else {
@@ -404,7 +411,7 @@ function setRoundTrip(button) {
 		$(button).addClass("btn-success");
 		$(button).removeClass("btn-default");
 		
-		endLocation = null;
+		endLocation = undefined;
 		$("#end-location").val("");
 	} else {
 		isLooping = false;
@@ -423,14 +430,91 @@ function setCurrentLocation() {
 	Save/load buttons are not user friendly **/
 function saveTrip() {
 	if (typeof (Storage) !== "undefined") {
-		console.log("localStorage works!");
+		// All inputs with an ID saved
+		$("input").each(function () {
+			var id = $(this).attr("id"),
+				value = $(this).val();
+			localStorage.setItem(id, value);
+		});
+		
+		// Button states
+		localStorage.setItem("travel-type", travelType);
+		localStorage.setItem("round-trip", isLooping);
+		localStorage.setItem("minimum-rating", minimumRating);
+		
+		// Attraction list
+		localStorage.setItem("attractions", JSON.stringify(addedAttractionsArray));
+		
+		// Start and End locations
+		localStorage.setItem("start-latlng", startLocation);
+		localStorage.setItem("end-latlng", endLocation);
+		
+		localStorage.setItem("has-saved", true);
 	} else {
 		console.log("localStorage not supported by browser");
 	}
 }
 
 function loadTrip() {
-	
+	if (typeof (Storage) !== "undefined") {
+		if (!localStorage.getItem("has-saved")) {
+			return;
+		}
+		
+		var id,
+			value,
+			costRange,
+			roundTripButton,
+			currentTravelButton,
+			currentRatingButton,
+			i;
+		
+		// All inputs with an ID loaded
+		$("input").each(function () {
+			id = $(this).attr("id");
+			value = localStorage.getItem(id);
+			
+			$(this).val(value);
+		});
+		
+		/* Button states */
+		// Round trip state
+		if (localStorage.getItem("round-trip") === "true") {
+			roundTripButton = document.getElementById("round-trip");
+			$(roundTripButton).attr("aria-pressed", false);
+			setRoundTrip(roundTripButton);
+		}
+		
+		// Travel type state
+		currentTravelButton = $("[name=" + localStorage.getItem("travel-type") + "]").get(0);
+		setTravelType(currentTravelButton);
+		
+		// Minimum rating state
+		currentRatingButton = $("#hotel-rating div:nth-child(" + localStorage.getItem("minimum-rating") + ") button").get(0);
+		setRating(currentRatingButton, localStorage.getItem("minimum-rating"));
+		
+		
+		// Attraction array
+		addedAttractionsArray = JSON.parse(localStorage.getItem("attractions"));
+		
+		// Fix JSON parse bug
+		for (i = 0; i < addedAttractionsArray.length; i += 1) {
+			addedAttractionsArray[i].location = new google.maps.LatLng(addedAttractionsArray[i].location.A, addedAttractionsArray[i].location.F);
+		}
+		
+		// Start and End locations
+		if (localStorage.getItem("start-latlng") != "undefined") {
+			startLocation = localStorage.getItem("start-latlng");
+		}
+		if (localStorage.getItem("end-latlng") != "undefined") {
+			endLocation = localStorage.getItem("end-latlng");
+		}
+		
+		generateTable();
+		calculateRoute();
+	} else {
+		console.log("localStorage not supported by browser");
+	}
 }
 
 function changeTab(tabName) {
@@ -458,7 +542,6 @@ function removeNotifications() {
 	$("#popup-container").html("");
 }
 
-$(window).on("beforeunload", function() {
+$(window).on("beforeunload", function () {
 	saveTrip();
-	return "Testing Saving";
 });
