@@ -221,7 +221,6 @@ function addAttraction() {
 		$("#add-attraction").attr("disabled", true);
 
 		calculateRoute();
-		generateTable();
 		//setAttractionMarkers();
 	} else {
 		notifyUser("Maximum Waypoints Set", "You have reached the maximum amount of waypoints currently allowed: 8", "info");
@@ -269,7 +268,6 @@ function deleteAttraction(button) {
 	addedAttractionsArray.splice(row.index(), 1);
 	
 	calculateRoute();
-	generateTable();
 //	setAttractionMarkers();
 }
 
@@ -352,6 +350,7 @@ function calculateRoute() {
 	}
 	
     setMapViewport(allLocations);
+	generateTable();
 }
 
 /** Generates and regenerates all the attraction markers **/
@@ -529,7 +528,6 @@ function loadTrip() {
 		}
 		
 		calculateRoute();
-		generateTable();
 	} else {
 		console.log("localStorage not supported by browser");
 	}
