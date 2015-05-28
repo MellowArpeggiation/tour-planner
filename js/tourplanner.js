@@ -40,6 +40,7 @@ var earlyTime = 9;
 var visitingTime = 60;
 
 var departureDateTime = null;
+var totalDistance = 0;
 
 var placesAndHotels = [];
 var timeTable = [];
@@ -236,7 +237,7 @@ function addAttraction() {
 			name: currentLocationName,
 			location: currentLocation,
 			distance: 0,
-			time: 0
+			time: "00:00"
 		};
 		addedAttractionsArray.push(location);
 
@@ -278,21 +279,36 @@ function generateTable() {
 			closeButtonCell = row.insertCell(3);
 
 			locationNameCell.innerHTML = addedAttractionsArray[i].name;
-			travelInfoCell.innerHTML = "00:00 0km";
-			infoButtonCell.innerHTML = "<span class='glyphicon glyphicon-info-sign'></span>";
+			travelInfoCell.innerHTML = addedAttractionsArray[i].time + " " + addedAttractionsArray[i].distance + "km";
+			infoButtonCell.innerHTML = "<span class='glyphicon glyphicon-info-sign info-button'></span>";
 			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)'>&times;</button>";
 		}
+		row = table.insertRow(-1);
+
+		locationNameCell = row.insertCell(0);
+		travelInfoCell = row.insertCell(1);
+		infoButtonCell = row.insertCell(2);
+		closeButtonCell = row.insertCell(3);
+		
+		locationNameCell.innerHTML = "Total Distance and Travel Time";
+		travelInfoCell.innerHTML = "00:00 " + totalDistance + "km";
+		infoButtonCell.innerHTML = "";
+		closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAllAttractions()'>&times;</button>";
 	}
 }
 
-
-// Fixed and shortened
 function deleteAttraction(button) {
 	var row = $(button).parent().parent();
 	addedAttractionsArray.splice(row.index(), 1);
 	
 	calculateRoute();
 //	setAttractionMarkers();
+}
+
+function deleteAllAttractions() {
+	addedAttractionsArray = [];
+	
+	calculateRoute();
 }
 
 function shareRoute() {
@@ -312,6 +328,20 @@ function getGTravelMode() {
 		travelMode = google.maps.TravelMode.TRANSIT;
 	}
 	return travelMode;
+}
+
+function directionsCallback(response, status) {
+	if (status === google.maps.DirectionsStatus.OK) {
+		directionsDisplay.setDirections(response);
+
+		calculateTotalDistance(response);
+		setTimeTable(response);
+		getPlacesArray(response);
+	} else {
+		notifyUser("Routing failed", "The application has failed to plot your route", "danger");
+	}
+	
+	generateTable();
 }
 
 function calculateRoute() {
@@ -338,15 +368,7 @@ function calculateRoute() {
 			waypoints: waypoints,
 			optimizeWaypoints: true
 		};
-		directionsService.route(request, function (response, status) {
-			if (status === google.maps.DirectionsStatus.OK) {
-				directionsDisplay.setDirections(response);
-				
-				calculateTotalDistance(response);
-				setTimeTable(response);
-				getPlacesArray(response);
-			}
-		});
+		directionsService.route(request, directionsCallback);
 	} else if (startLocation != undefined && isLooping) {
 		directionsDisplay.setMap(map);
 		request = {
@@ -356,15 +378,7 @@ function calculateRoute() {
 			waypoints: waypoints,
 			optimizeWaypoints: true
 		};
-		directionsService.route(request, function (response, status) {
-			if (status === google.maps.DirectionsStatus.OK) {
-				directionsDisplay.setDirections(response);
-				
-				calculateTotalDistance(response);
-				setTimeTable(response);
-				getPlacesArray(response);
-			}
-		});
+		directionsService.route(request, directionsCallback);
 	} else {
 		directionsDisplay.setMap(null);
 	}
@@ -382,7 +396,6 @@ function calculateRoute() {
 	}
 	
     setMapViewport(allLocations);
-	generateTable();
 }
 
 /** Generates and regenerates all the attraction markers **/
@@ -507,7 +520,7 @@ function saveTrip() {
 		
 		localStorage.setItem("has-saved", true);
 	} else {
-		console.log("localStorage not supported by browser");
+		return "Your tour plan can not be saved";
 	}
 }
 
@@ -574,7 +587,7 @@ function loadTrip() {
 		
 		calculateRoute();
 	} else {
-		console.log("localStorage not supported by browser");
+		notifyUser("Local Storage Unavailable", "Your device does not support Local Storage, your tour will not be saved", "danger");
 	}
 }
 
@@ -604,7 +617,7 @@ function removeNotifications() {
 }
 
 $(window).on("beforeunload", function () {
-	saveTrip();
+	return saveTrip();
 });
 
 /** Parameter = location
@@ -621,7 +634,7 @@ function findNearbyHotel() {
 
 	placesService.nearbySearch(request, function (result, status) {
 		if (status == google.maps.places.PlacesServiceStatus.OK) {
-			
+			console.log("OK");
 		}
 	});
 }
@@ -665,14 +678,14 @@ function getPlaceInfo(id) {
 }
 
 function calculateTotalDistance(response) {
-	var totalDistance = 0,
-		i;
+	var i;
+	totalDistance = 0;
+	
 	for (i = 0; i < response.routes[0].legs.length; i += 1) {
 		totalDistance = totalDistance + response.routes[0].legs[i].distance.value;
 	}
 	
-	totalDistance = (totalDistance / 1000).toFixed(2) + " km";
-	console.log(totalDistance);
+	totalDistance = (totalDistance / 1000).toFixed(2); // Convert to km
 }
 
 function getPlacesArray(response) {
