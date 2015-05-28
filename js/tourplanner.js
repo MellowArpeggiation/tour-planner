@@ -236,7 +236,7 @@ function addAttraction() {
 		var location = {
 			name: currentLocationName,
 			location: currentLocation,
-			distance: 0,
+			distance: "0 km",
 			time: "00:00"
 		};
 		addedAttractionsArray.push(location);
@@ -252,13 +252,14 @@ function addAttraction() {
 	}
 }
 
-function generateTable() {
+function generateTable(response) {
     var table,
         row,
         locationNameCell,
         travelInfoCell,
         infoButtonCell,
         closeButtonCell,
+		waypointOrder,
         i;
     
 	table = document.getElementById("attraction-table");
@@ -266,11 +267,16 @@ function generateTable() {
 	// Delete contents of table
 	$(table).empty();
 	
-	if (addedAttractionsArray.length === 0) {
-		$("#attraction-table-container").hide();
-	} else {
+	waypointOrder = response.routes[0].waypoint_order;
+	console.log(waypointOrder);
+	
+	if (addedAttractionsArray.length !== 0) {
 		$("#attraction-table-container").show();
+		// Attractions
 		for (i = 0; i < addedAttractionsArray.length; i += 1) {
+			addedAttractionsArray[i].time = response.routes[0].legs[waypointOrder[i]].duration.text;
+			addedAttractionsArray[i].distance = response.routes[0].legs[waypointOrder[i]].distance.text;
+			
 			row = table.insertRow(-1);
 
 			locationNameCell = row.insertCell(0);
@@ -279,22 +285,39 @@ function generateTable() {
 			closeButtonCell = row.insertCell(3);
 
 			locationNameCell.innerHTML = addedAttractionsArray[i].name;
-			travelInfoCell.innerHTML = addedAttractionsArray[i].time + " " + addedAttractionsArray[i].distance + "km";
+			travelInfoCell.innerHTML = addedAttractionsArray[i].time + " " + addedAttractionsArray[i].distance;
 			infoButtonCell.innerHTML = "<span class='glyphicon glyphicon-info-sign info-button'></span>";
 			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)'>&times;</button>";
 		}
-		row = table.insertRow(-1);
-
-		locationNameCell = row.insertCell(0);
-		travelInfoCell = row.insertCell(1);
-		infoButtonCell = row.insertCell(2);
-		closeButtonCell = row.insertCell(3);
-		
-		locationNameCell.innerHTML = "Total Distance and Travel Time";
-		travelInfoCell.innerHTML = "00:00 " + totalDistance + "km";
-		infoButtonCell.innerHTML = "";
-		closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAllAttractions()'>&times;</button>";
 	}
+		
+	// To destination
+	i = response.routes[0].legs.length - 1;
+
+	row = table.insertRow(-1);
+
+	locationNameCell = row.insertCell(0);
+	travelInfoCell = row.insertCell(1);
+	infoButtonCell = row.insertCell(2);
+	closeButtonCell = row.insertCell(3);
+
+	locationNameCell.innerHTML = "To Destination";
+	travelInfoCell.innerHTML = response.routes[0].legs[i].duration.text + " " + response.routes[0].legs[i].distance.text;
+	infoButtonCell.innerHTML = "";
+	closeButtonCell.innerHTML = "";
+
+	// Totals
+	row = table.insertRow(-1);
+
+	locationNameCell = row.insertCell(0);
+	travelInfoCell = row.insertCell(1);
+	infoButtonCell = row.insertCell(2);
+	closeButtonCell = row.insertCell(3);
+
+	locationNameCell.innerHTML = "Total Distance and Travel Time";
+	travelInfoCell.innerHTML = "00:00 " + totalDistance;
+	infoButtonCell.innerHTML = "";
+	closeButtonCell.innerHTML = "";
 }
 
 function deleteAttraction(button) {
@@ -337,11 +360,13 @@ function directionsCallback(response, status) {
 		calculateTotalDistance(response);
 		setTimeTable(response);
 		getPlacesArray(response);
+		
+		
 	} else {
 		notifyUser("Routing failed", "The application has failed to plot your route", "danger");
 	}
 	
-	generateTable();
+	generateTable(response);
 }
 
 function calculateRoute() {
@@ -682,10 +707,10 @@ function calculateTotalDistance(response) {
 	totalDistance = 0;
 	
 	for (i = 0; i < response.routes[0].legs.length; i += 1) {
-		totalDistance = totalDistance + response.routes[0].legs[i].distance.value;
+		totalDistance += response.routes[0].legs[i].distance.value;
 	}
 	
-	totalDistance = (totalDistance / 1000).toFixed(2); // Convert to km
+	totalDistance = (totalDistance / 1000).toFixed(1) + " km"; // Convert to km
 }
 
 function getPlacesArray(response) {
