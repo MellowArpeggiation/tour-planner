@@ -9,7 +9,7 @@
 	generateTable, setAttractionMarkers, notifyUser, removeNotifications,
 	initMap, initPlanTour, initAttractions, initHotels, loadTrip, saveTrip,
 	calculateTotalDistance, setTimeTable, getPlacesArray, getStartTime,
-	timeCalculation, findPlaceIdAndName*/
+	timeCalculation, findPlaceIdAndName, createMarker, addAttraction*/
 
 // Initialised in mapproperties.js
 /*global reasonableZoom, mapProperties*/
@@ -19,6 +19,7 @@ var geocoder,
 	directionsDisplay,
 	directionsService,
 	placesService,
+	infoWindow,
 	map;
 
 // Variables for 'autocomplete' on the start and end location text boxes
@@ -47,6 +48,8 @@ var timeTable = [];
 
 var userMarker;
 
+var attractionMarkers = [];
+
 // Store the travel type
 var travelType = "walking",
 	isLooping = false;
@@ -61,7 +64,9 @@ var transitLayer,
 /* FOR POPUP PAGE */
 // Variables of the current location set by asynchronous method 
 var currentLocationName,
-	currentLocation;
+	currentLocation,
+	currentMarkerLocation,
+	currentMarkerName;
 
 var allWaypoints = [];
 var wpType = {
@@ -109,6 +114,15 @@ function initMap() {
 	transitLayer = new google.maps.TransitLayer();
 	trafficLayer = new google.maps.TrafficLayer();
 	bicycleLayer = new google.maps.BicyclingLayer();
+	
+	google.maps.event.addListener(map, "idle", function () {
+		var request = {
+			bounds: map.getBounds()
+		};
+		placesService.nearbySearch(request, setAttractionMarkers);
+	});
+	
+	infoWindow = new google.maps.InfoWindow();
 }
 
 function initPlanTour() {
@@ -150,7 +164,8 @@ function initPlanTour() {
 
 function initAttractions() {
 	// Function scope variables
-	var attractionAutocomplete;
+	var attractionAutocomplete,
+		addressSegments;
 					
 	// Initialising the autocomplete objects, restricting the search
 	// to geographical location types.
@@ -163,7 +178,8 @@ function initAttractions() {
 	// populate the address fields in the form.
 	//start location autocomplete event
 	google.maps.event.addListener(attractionAutocomplete, "place_changed", function () {
-		currentLocationName = document.getElementById("attraction-location").value;
+		addressSegments = $("#attraction-location").val().split(",");
+		currentLocationName = addressSegments[0] + "," + addressSegments[1];
 		geocodeAddress(document.getElementById("attraction-location").value, 3);
 		
 		$("#add-attraction").removeAttr("disabled");
@@ -231,6 +247,13 @@ function setMapViewport(arrayOfLocations) {
 	}
 }
 
+function addAttractionFromMarker() {
+	currentLocationName = currentMarkerName;
+	currentLocation = currentMarkerLocation;
+	
+	addAttraction();
+}
+
 function addAttraction() {
 	if (allWaypoints.length < 8) {
 		removeNotifications();
@@ -247,7 +270,6 @@ function addAttraction() {
 		$("#add-attraction").attr("disabled", true);
 
 		calculateRoute();
-		//setAttractionMarkers();
 	} else {
 		notifyUser("Maximum Waypoints Set", "You have reached the maximum amount of waypoints currently allowed: 8", "info");
 	}
@@ -330,7 +352,6 @@ function deleteAttraction(button) {
 	allWaypoints.splice(row, 1);
 	
 	calculateRoute();
-//	setAttractionMarkers();
 }
 
 function deleteAllAttractions() {
@@ -428,25 +449,50 @@ function calculateRoute() {
     setMapViewport(allLocations);
 }
 
-/** Generates and regenerates all the attraction markers **/
-/*function setAttractionMarkers() {
-	var i, newMarker;
-	// Clear current markers
-	for (i = 0; i < attractionMarkers.length; i += 1) {
-		attractionMarkers[i].setMap(null);
+/** Generates and regenerates all the nearby attraction markers **/
+function setAttractionMarkers(results, status) {
+	if (status == google.maps.places.PlacesServiceStatus.OK) {
+		var i;
+		for (i = 0; i < attractionMarkers.length; i += 1) {
+			attractionMarkers[i].setMap(null);
+		}
+		attractionMarkers = [];
+
+		for (i = 0; i < results.length; i += 1) {
+			createMarker(results[i]);
+		}
 	}
-	attractionMarkers = [];
-	
-	// Add all attractions to map
-	for (i = 0; i < allWaypoints.length; i += 1) {
-		newMarker = new google.maps.Marker({
-			animation: google.maps.Animation.DROP,
+}
+
+function createMarker(place) {
+	var placeLoc = place.geometry.location,
+		marker = new google.maps.Marker({
 			map: map,
-			position: allWaypoints[i].location
+			position: place.geometry.location,
+			icon: {
+				url: place.icon,
+				origin: new google.maps.Point(0, 0),
+				anchor: new google.maps.Point(14, 14),
+				scaledSize: new google.maps.Size(28, 28)
+			}
 		});
-		attractionMarkers.push(newMarker);
-	}
-}*/
+
+	google.maps.event.addListener(marker, "click", function () {
+		placesService.getDetails(place, function (result, status) {
+			if (status != google.maps.places.PlacesServiceStatus.OK) {
+				console.log(status);
+				return;
+			}
+			infoWindow.setContent("<span class='text-center'>" + result.name + "<br /><button class='btn btn-primary' onclick='addAttractionFromMarker()' ontouchend='addAttractionFromMarker()'>Add</button></span>");
+			infoWindow.open(map, marker);
+			
+			currentMarkerLocation = result.geometry.location;
+			currentMarkerName = result.name;
+		});
+	});
+
+	attractionMarkers.push(marker);
+}
 
 function setTravelType(originElement) {
 	travelType = originElement.name;
@@ -518,7 +564,7 @@ function setCurrentLocation() {
 			// Grab the first result as the address
 			$("#start-location").val(results[0].formatted_address);
 		} else {
-			alert('Geocoder failed due to: ' + status);
+			console.log('Geocoder failed due to: ' + status);
 		}
 	});
 	
