@@ -62,24 +62,6 @@ var mapProperties = {
 				{ saturation: 50 }
 			]
 		}, {
-			featureType: "poi",
-			elementType: "labels",
-			stylers: [
-				{ visibility: "on" }
-			]
-		}, {
-			featureType: "poi",
-			elementType: "labels.text.stroke",
-			stylers: [
-				{ lightness: -100 }
-			]
-		}, {
-			featureType: "poi",
-			elementType: "labels.text.fill",
-			stylers: [
-				{ lightness: 100 }
-			]
-		}, {
 			featureType: "administrative",
 			elementType: "labels",
 			stylers: [
