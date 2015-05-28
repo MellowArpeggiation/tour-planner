@@ -7,7 +7,7 @@
 // Function list
 /*global initialize, geocodeAddress, setMapViewport, calculateRoute,
 	generateTable, setAttractionMarkers, notifyUser, removeNotifications,
-	initPlanTour, initAttractions, initHotels, loadTrip, saveTrip,
+	initMap, initPlanTour, initAttractions, initHotels, loadTrip, saveTrip,
 	calculateTotalDistance, setTimeTable, getPlacesArray, getStartTime,
 	timeCalculation, findPlaceIdAndName*/
 
@@ -53,10 +53,6 @@ var travelType = "walking",
 
 var minimumRating = 2;
 
-// End of time (for cookie storage purposes)
-var endOfTime = "expires=Fri, 31 Dec 9999 23:59:59 GMT;",
-	immediate = "expires=Thu, 01 Jan 1970 00:00:00 UTC;";
-
 // Transit, traffic, and bicycle layers
 var transitLayer,
 	trafficLayer,
@@ -74,6 +70,7 @@ var wpType = {
 };
 
 function initialize() {
+	initMap();
 	initPlanTour();
 	initAttractions();
 	initHotels();
@@ -81,12 +78,9 @@ function initialize() {
 	loadTrip();
 }
 
-function initPlanTour() {
-	// Function scope variables
-    var startAutocomplete,
-		endAutocomplete,
-		attractionAutocomplete,
-		hotelAutocomplete;
+function initMap() {
+	//Add Map to Div
+	map = new google.maps.Map(document.getElementById("map-canvas"), mapProperties);
 	
 	// Detect browser location support
 	if (navigator.geolocation) {
@@ -101,9 +95,6 @@ function initPlanTour() {
 	} else {
 		console.log("Browser does not support Geolocation");
 	}
-		
-	//Add Map to Div
-	map = new google.maps.Map(document.getElementById("map-canvas"), mapProperties);
 	
 	// Prepare directions API
 	directionsDisplay = new google.maps.DirectionsRenderer();
@@ -114,12 +105,23 @@ function initPlanTour() {
 	
 	//Initialise Geocoder object
 	geocoder = new google.maps.Geocoder();
+	
+	transitLayer = new google.maps.TransitLayer();
+	trafficLayer = new google.maps.TrafficLayer();
+	bicycleLayer = new google.maps.BicyclingLayer();
+}
+
+function initPlanTour() {
+	// Function scope variables
+    var startAutocomplete,
+		endAutocomplete,
+		attractionAutocomplete,
+		hotelAutocomplete;
 
 	// Initialising the autocomplete objects, restricting the search
 	// to geographical location types.
 	startAutocomplete = new google.maps.places.Autocomplete((document.getElementById('start-location')), { types: ['geocode'] });
 	endAutocomplete = new google.maps.places.Autocomplete((document.getElementById('end-location')), { types: ['geocode'] });
-
 
 	// When the user selects an address from the dropdown,
 	// populate the address fields in the form.
@@ -144,10 +146,6 @@ function initPlanTour() {
 		// styling breaks if the button is removed without reordering DOM
 		$("#departure-time>input").attr("type", "datetime-local");
 	}
-	
-	transitLayer = new google.maps.TransitLayer();
-	trafficLayer = new google.maps.TrafficLayer();
-	bicycleLayer = new google.maps.BicyclingLayer();
 }
 
 function initAttractions() {
