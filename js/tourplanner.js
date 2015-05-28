@@ -380,6 +380,7 @@ function getGTravelMode() {
 }
 
 function directionsCallback(response, status) {
+	var minimumDays;
 	if (status === google.maps.DirectionsStatus.OK) {
 		directionsDisplay.setDirections(response);
 
@@ -387,7 +388,13 @@ function directionsCallback(response, status) {
 		setTimeTable(response);
 		getPlacesArray(response);
 		
+		minimumDays = Math.ceil(timeTable.reduce(function (a, b) {return a + b; }) / 60 / 60 / 24);
+		console.log(minimumDays);
 		
+		$("#min-days").html(minimumDays);
+		if ($("#duration").val() < minimumDays) {
+			$("#duration").val(minimumDays)
+		}
 	} else {
 		notifyUser("Routing failed", "The application has failed to plot your route", "danger");
 	}
