@@ -67,7 +67,7 @@ var transitLayer,
 var currentLocationName,
 	currentLocation;
 
-var addedAttractionsArray = [];
+var allWaypoints = [];
 
 
 function initialize() {
@@ -231,7 +231,7 @@ function setMapViewport(arrayOfLocations) {
 }
 
 function addAttraction() {
-	if (addedAttractionsArray.length < 8) {
+	if (allWaypoints.length < 8) {
 		removeNotifications();
 		var location = {
 			name: currentLocationName,
@@ -239,7 +239,7 @@ function addAttraction() {
 			distance: "0 km",
 			time: "00:00"
 		};
-		addedAttractionsArray.push(location);
+		allWaypoints.push(location);
 
 		// Clears the attractions auto complete box 
 		document.getElementById("attraction-location").value = '';
@@ -260,6 +260,7 @@ function generateTable(response) {
         infoButtonCell,
         closeButtonCell,
 		waypointOrder,
+		currentWaypoint,
         i;
     
 	table = document.getElementById("attraction-table");
@@ -268,24 +269,27 @@ function generateTable(response) {
 	$(table).empty();
 	
 	waypointOrder = response.routes[0].waypoint_order;
-	console.log(waypointOrder);
+	console.log(waypointOrder.length);
+	console.log(allWaypoints.length);
 	
-	if (addedAttractionsArray.length !== 0) {
+	if (allWaypoints.length !== 0) {
 		$("#attraction-table-container").show();
 		// Attractions
-		for (i = 0; i < addedAttractionsArray.length; i += 1) {
-			addedAttractionsArray[i].time = response.routes[0].legs[waypointOrder[i]].duration.text;
-			addedAttractionsArray[i].distance = response.routes[0].legs[waypointOrder[i]].distance.text;
+		for (i = 0; i < waypointOrder.length; i += 1) {
+			currentWaypoint = allWaypoints[waypointOrder[i]];
+			
+			currentWaypoint.time = response.routes[0].legs[i].duration.text;
+			currentWaypoint.distance = response.routes[0].legs[i].distance.text;
 			
 			row = table.insertRow(-1);
-
+			
 			locationNameCell = row.insertCell(0);
 			travelInfoCell = row.insertCell(1);
 			infoButtonCell = row.insertCell(2);
 			closeButtonCell = row.insertCell(3);
 
-			locationNameCell.innerHTML = addedAttractionsArray[i].name;
-			travelInfoCell.innerHTML = addedAttractionsArray[i].time + " " + addedAttractionsArray[i].distance;
+			locationNameCell.innerHTML = currentWaypoint.name;
+			travelInfoCell.innerHTML = currentWaypoint.time + "<br />" + currentWaypoint.distance;
 			infoButtonCell.innerHTML = "<span class='glyphicon glyphicon-info-sign info-button'></span>";
 			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)'>&times;</button>";
 		}
@@ -295,14 +299,14 @@ function generateTable(response) {
 	i = response.routes[0].legs.length - 1;
 
 	row = table.insertRow(-1);
-
+	
 	locationNameCell = row.insertCell(0);
 	travelInfoCell = row.insertCell(1);
 	infoButtonCell = row.insertCell(2);
 	closeButtonCell = row.insertCell(3);
 
 	locationNameCell.innerHTML = "To Destination";
-	travelInfoCell.innerHTML = response.routes[0].legs[i].duration.text + " " + response.routes[0].legs[i].distance.text;
+	travelInfoCell.innerHTML = response.routes[0].legs[i].duration.text + "<br />" + response.routes[0].legs[i].distance.text;
 	infoButtonCell.innerHTML = "";
 	closeButtonCell.innerHTML = "";
 
@@ -315,21 +319,21 @@ function generateTable(response) {
 	closeButtonCell = row.insertCell(3);
 
 	locationNameCell.innerHTML = "Total Distance and Travel Time";
-	travelInfoCell.innerHTML = "00:00 " + totalDistance;
+	travelInfoCell.innerHTML = "00:00<br />" + totalDistance;
 	infoButtonCell.innerHTML = "";
 	closeButtonCell.innerHTML = "";
 }
 
 function deleteAttraction(button) {
 	var row = $(button).parent().parent();
-	addedAttractionsArray.splice(row.index(), 1);
+	allWaypoints.splice(row.index(), 1);
 	
 	calculateRoute();
 //	setAttractionMarkers();
 }
 
 function deleteAllAttractions() {
-	addedAttractionsArray = [];
+	allWaypoints = [];
 	
 	calculateRoute();
 }
@@ -377,9 +381,9 @@ function calculateRoute() {
 		i;
 	
 	// Calculate and draw directions
-	for (i = 0; i < addedAttractionsArray.length; i += 1) {
+	for (i = 0; i < allWaypoints.length; i += 1) {
 		waypoints.push({
-			location: addedAttractionsArray[i].location,
+			location: allWaypoints[i].location,
 			stopover: true
 		});
 	}
@@ -416,8 +420,8 @@ function calculateRoute() {
 	if (endLocation != undefined && endLocation != "null") {
 		allLocations.push(endLocation);
 	}
-	for (i = 0; i < addedAttractionsArray.length; i += 1) {
-		allLocations.push(addedAttractionsArray[i].location);
+	for (i = 0; i < allWaypoints.length; i += 1) {
+		allLocations.push(allWaypoints[i].location);
 	}
 	
     setMapViewport(allLocations);
@@ -433,11 +437,11 @@ function calculateRoute() {
 	attractionMarkers = [];
 	
 	// Add all attractions to map
-	for (i = 0; i < addedAttractionsArray.length; i += 1) {
+	for (i = 0; i < allWaypoints.length; i += 1) {
 		newMarker = new google.maps.Marker({
 			animation: google.maps.Animation.DROP,
 			map: map,
-			position: addedAttractionsArray[i].location
+			position: allWaypoints[i].location
 		});
 		attractionMarkers.push(newMarker);
 	}
@@ -537,7 +541,7 @@ function saveTrip() {
 		localStorage.setItem("minimum-rating", minimumRating);
 		
 		// Attraction list
-		localStorage.setItem("attractions", JSON.stringify(addedAttractionsArray));
+		localStorage.setItem("attractions", JSON.stringify(allWaypoints));
 		
 		// Start and End locations
 		localStorage.setItem("start-latlng", JSON.stringify(startLocation));
@@ -595,11 +599,11 @@ function loadTrip() {
 		
 		
 		// Attraction array
-		addedAttractionsArray = JSON.parse(localStorage.getItem("attractions"));
+		allWaypoints = JSON.parse(localStorage.getItem("attractions"));
 		
 		// Fix JSON parse bug
-		for (i = 0; i < addedAttractionsArray.length; i += 1) {
-			addedAttractionsArray[i].location = new google.maps.LatLng(addedAttractionsArray[i].location.A, addedAttractionsArray[i].location.F);
+		for (i = 0; i < allWaypoints.length; i += 1) {
+			allWaypoints[i].location = new google.maps.LatLng(allWaypoints[i].location.A, allWaypoints[i].location.F);
 		}
 		
 		// Start and End locations
@@ -775,10 +779,10 @@ function setTimeTable(response) {
 function findPlaceIdAndName(location) {
 	var object = null,
 		i;
-	for (i = 0; i < addedAttractionsArray.length; i += 1) {
+	for (i = 0; i < allWaypoints.length; i += 1) {
 	
-		if (addedAttractionsArray[i].location.A == location.A && addedAttractionsArray[i].location.F == location.F) {
-			object = {name: addedAttractionsArray[i].name, location: addedAttractionsArray[i].location, id: addedAttractionsArray[i].id};
+		if (allWaypoints[i].location.A == location.A && allWaypoints[i].location.F == location.F) {
+			object = {name: allWaypoints[i].name, location: allWaypoints[i].location, id: allWaypoints[i].id};
 		}
 	}
 	return object;
