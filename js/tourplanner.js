@@ -190,7 +190,7 @@ function initHotels() {
 //Takes the entered address and set the start and end location latitude and longitude
 //The assign variable being a 1 or a 2 determines whether the locations is the start or destination
 function geocodeAddress(location, assign) {
-	geocoder.geocode({ 'address': location }, function (results, status) {
+	geocoder.geocode({'address': location}, function (results, status) {
 		if (status === google.maps.GeocoderStatus.OK) {
 			//global variable assignment
 			if (assign === 1) {
@@ -462,11 +462,24 @@ function setRoundTrip(button) {
 		$(button).addClass("btn-default");
 		$(button).removeClass("btn-success");
 	}
+	
 	calculateRoute();
 }
 
 function setCurrentLocation() {
+	startLocation = userLocation;
+	console.log(userLocation);
 	
+	geocoder.geocode({'latLng': userLocation}, function (results, status) {
+		if (status == google.maps.GeocoderStatus.OK) {
+			// Grab the first result as the address
+			$("#start-location").val(results[0].formatted_address);
+		} else {
+			alert('Geocoder failed due to: ' + status);
+		}
+	});
+	
+	calculateRoute();
 }
 
 /** Save and load the trip at the beginning and end of each session, 
