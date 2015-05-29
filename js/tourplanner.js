@@ -432,9 +432,17 @@ function getGTravelMode() {
 }
 
 function getMinimumDays() {
-	var totalTime = timeTable.reduce(function (a, b) {return a + b; }),
+	var totalTime,
+		totalDays,
+		ceilDays;
+	
+	if (timeTable.length !== 0) {
+		totalTime = timeTable.reduce(function (a, b) {return a + b; }),
 		totalDays = totalTime / 60 / 60 / 24,
 		ceilDays = Math.ceil(totalDays);
+	} else {
+		ceilDays = 0;
+	}
 	
 	return ceilDays;
 }
