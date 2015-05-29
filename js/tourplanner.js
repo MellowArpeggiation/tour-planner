@@ -356,7 +356,9 @@ function showAttraction(button) {
 	
 	infoWindow.setContent(waypoint.name);
 	infoWindow.setPosition(waypoint.location);
-	infoWindow.open(map)
+	infoWindow.open(map);
+	
+	window.scrollTo(0, 0);
 }
 
 function deleteAttraction(button) {
