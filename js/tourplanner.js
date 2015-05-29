@@ -290,7 +290,7 @@ function addAttraction() {
 	}
 }
 
-function generateTable(response) {
+function generateTable(response, routingSuccess) {
     var table,
         row,
         locationNameCell,
@@ -306,7 +306,14 @@ function generateTable(response) {
 	// Delete contents of table
 	$(table).empty();
 	
-	waypointOrder = response.routes[0].waypoint_order;
+	if (routingSuccess) {
+		waypointOrder = response.routes[0].waypoint_order;
+	} else {
+		waypointOrder = [];
+		for (i = 0; i < allWaypoints.length; i += 1) {
+			waypointOrder.push(i);
+		}
+	}
 	
 	if (allWaypoints.length !== 0) {
 		$("#attraction-table-container").show();
@@ -314,8 +321,10 @@ function generateTable(response) {
 		for (i = 0; i < waypointOrder.length; i += 1) {
 			currentWaypoint = allWaypoints[waypointOrder[i]];
 			
-			currentWaypoint.time = response.routes[0].legs[i].duration.text;
-			currentWaypoint.distance = response.routes[0].legs[i].distance.text;
+			if (routingSuccess) {
+				currentWaypoint.time = response.routes[0].legs[i].duration.text;
+				currentWaypoint.distance = response.routes[0].legs[i].distance.text;
+			}
 			
 			row = table.insertRow(-1);
 			
@@ -330,34 +339,36 @@ function generateTable(response) {
 			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)' data-wpnum='" + waypointOrder[i] + "'>&times;</button>";
 		}
 	}
-		
-	// To destination
-	i = response.routes[0].legs.length - 1;
-
-	row = table.insertRow(-1);
 	
-	locationNameCell = row.insertCell(0);
-	travelInfoCell = row.insertCell(1);
-	infoButtonCell = row.insertCell(2);
-	closeButtonCell = row.insertCell(3);
+	if (routingSuccess) {
+		// To destination
+		i = response.routes[0].legs.length - 1;
 
-	locationNameCell.innerHTML = "To Destination";
-	travelInfoCell.innerHTML = response.routes[0].legs[i].duration.text + "<br />" + response.routes[0].legs[i].distance.text;
-	infoButtonCell.innerHTML = "";
-	closeButtonCell.innerHTML = "";
+		row = table.insertRow(-1);
 
-	// Totals
-	row = table.insertRow(-1);
+		locationNameCell = row.insertCell(0);
+		travelInfoCell = row.insertCell(1);
+		infoButtonCell = row.insertCell(2);
+		closeButtonCell = row.insertCell(3);
 
-	locationNameCell = row.insertCell(0);
-	travelInfoCell = row.insertCell(1);
-	infoButtonCell = row.insertCell(2);
-	closeButtonCell = row.insertCell(3);
+		locationNameCell.innerHTML = "To Destination";
+		travelInfoCell.innerHTML = response.routes[0].legs[i].duration.text + "<br />" + response.routes[0].legs[i].distance.text;
+		infoButtonCell.innerHTML = "";
+		closeButtonCell.innerHTML = "";
 
-	locationNameCell.innerHTML = "Total Distance and Travel Time";
-	travelInfoCell.innerHTML = getHumanTotalTravel() + "<br />" + totalDistance;
-	infoButtonCell.innerHTML = "";
-	closeButtonCell.innerHTML = "";
+		// Totals
+		row = table.insertRow(-1);
+
+		locationNameCell = row.insertCell(0);
+		travelInfoCell = row.insertCell(1);
+		infoButtonCell = row.insertCell(2);
+		closeButtonCell = row.insertCell(3);
+
+		locationNameCell.innerHTML = "Total Distance and Travel Time";
+		travelInfoCell.innerHTML = getHumanTotalTravel() + "<br />" + totalDistance;
+		infoButtonCell.innerHTML = "";
+		closeButtonCell.innerHTML = "";
+	}
 }
 
 function showAttraction(button) {
@@ -456,7 +467,8 @@ function getHumanTotalTravel() {
 }
 
 function directionsCallback(response, status) {
-	var minimumDays;
+	var minimumDays,
+		isSuccess = false;
 	if (status === google.maps.DirectionsStatus.OK) {
 		directionsDisplay.setDirections(response);
 
@@ -471,11 +483,13 @@ function directionsCallback(response, status) {
 		if ($("#duration").val() < minimumDays) {
 			$("#duration").val(minimumDays);
 		}
+		
+		isSuccess = true;
 	} else {
 		notifyUser("Routing failed", "The application has failed to plot your route", "danger");
 	}
 	
-	generateTable(response);
+	generateTable(response, isSuccess);
 }
 
 function calculateRoute() {
@@ -882,6 +896,7 @@ function getStartTime() {
 
 function setTimeTable(response) {
 	var i;
+	timeTable = [];
 	timeTable[0] = 0;
 	
 	for (i = 0; i < response.routes[0].legs.length; i += 1) {
