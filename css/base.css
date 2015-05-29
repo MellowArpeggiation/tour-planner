@@ -4,7 +4,7 @@ body {
 
 .navbar-brand img {
 	width: 24px;
-	display: initial;
+	display: inline;
 }
 
 .map-container {
