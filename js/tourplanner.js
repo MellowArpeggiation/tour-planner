@@ -196,6 +196,9 @@ function initHotels() {
 		$("#cost-range").slider({
 			value: [parseInt(costRange[0], 10), parseInt(costRange[1], 10)]
 		});
+		
+		$("#cost-min").text("$" + costRange[0]);
+		$("#cost-max").text("$" + costRange[1]);
 	} else {
 		$("#cost-range").slider({});
 	}
