@@ -418,7 +418,11 @@ function getGTravelMode() {
 }
 
 function getMinimumDays() {
-	return Math.ceil(timeTable.reduce(function (a, b) {return a + b; }) / 60 / 60 / 24);
+	var totalTime = timeTable.reduce(function (a, b) {return a + b; }),
+		totalDays = totalTime / 60 / 60 / 24,
+		ceilDays = Math.ceil(totalDays);
+	
+	return ceilDays;
 }
 
 /** Returns a human readable string for total travel time **/
@@ -430,9 +434,9 @@ function getHumanTotalTravel() {
 		humanReadableTime;
 	
 	totalTimeSeconds = timeTable.reduce(function (a, b) {return a + b; });
-	timeMinutes = Math.round((totalTimeSeconds / 60) % 60);
-	timeHours = Math.round((totalTimeSeconds / 60 / 60) % 60);
-	timeDays = Math.round((totalTimeSeconds / 60 / 60 / 24) % 24);
+	timeMinutes = Math.floor((totalTimeSeconds / 60) % 60);
+	timeHours = Math.floor((totalTimeSeconds / 60 / 60) % 60);
+	timeDays = Math.floor((totalTimeSeconds / 60 / 60 / 24) % 24);
 	
 	humanReadableTime = "";
 	if (timeDays !== 0) {
@@ -461,6 +465,7 @@ function directionsCallback(response, status) {
 		getPlacesArray(response);
 		
 		minimumDays = Math.ceil(getMinimumDays());
+		console.log(minimumDays);
 		
 		$("#min-days").html(minimumDays);
 		if ($("#duration").val() < minimumDays) {
