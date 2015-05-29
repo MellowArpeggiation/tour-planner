@@ -619,6 +619,8 @@ function setRating(originElement, newRating) {
 }
 
 function setRoundTrip(button) {
+	console.log(button);
+	
 	// Returns a string rather than a boolean
 	// ALSO is inverted
 	if ($(button).attr("aria-pressed") !== "true") {
@@ -1011,17 +1013,46 @@ function timeCalculation(fromWhichIndex, placeList, response) {
 	return {index: indexFinished, list: newList};
 }
 
+/** All button handlers **/
+/*  Custom tap event works for onclick and ontouch */
+
 $(window).on("beforeunload", function () {
 	return saveTrip();
 });
 
-$(document).on("click", "#inc-days", function () {
+$(document).on("tap", "#inc-days", function () {
 	$("#duration").val(parseInt($("#duration").val(), 10) + 1);
 });
 
-$(document).on("click touchend", "#dec-days", function () {
+$(document).on("tap", "#dec-days", function () {
 	var currentDuration = parseInt($("#duration").val(), 10);
 	if (currentDuration > getMinimumDays()) {
 		$("#duration").val(currentDuration - 1);
 	}
+});
+
+$(document).on("tap", "#share-route", function () {
+	shareRoute();
+});
+
+$(document).on("tap", "#print-route", function () {
+	printRoute();
+});
+
+$(document).on("tap", "#set-current-location", function () {
+	setCurrentLocation();
+});
+
+$(document).on("tap", "#travel-mode button", function () {
+	setTravelType(this);
+});
+
+$(document).on("tap", "#add-attraction", function () {
+	if (!$("#add-attraction").prop("disabled")) {
+		addAttraction();
+	}
+});
+
+$(document).on("tap", "#hotel-rating button", function () {
+	setRating(this, $("#hotel-rating button").index(this) + 1);
 });
