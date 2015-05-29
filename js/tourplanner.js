@@ -537,7 +537,7 @@ function createMarker(place) {
 				console.log(status);
 				return;
 			}
-			infoWindow.setContent("<span class='text-center'>" + result.name + "<br /><button class='btn btn-primary' onclick='addAttractionFromMarker()' ontouchend='addAttractionFromMarker()'>Add</button></span>");
+			infoWindow.setContent("<div class='text-center'><h5>" + result.name + "</h5><button class='btn btn-primary' style='width: 90%;' onclick='addAttractionFromMarker()' ontouchend='addAttractionFromMarker()'>Add</button></div>");
 			infoWindow.open(map, marker);
 			
 			currentMarkerLocation = result.geometry.location;
