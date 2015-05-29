@@ -203,6 +203,10 @@ button:hover > .button-poptext {
 	filter: alpha(opacity=40);
 }
 
+[type="tel"] {
+	text-align: center;
+}
+
 /* Screen width specific CSS */
 /** XS **/
 @media (max-width: 767px) {

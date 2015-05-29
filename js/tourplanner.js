@@ -292,8 +292,6 @@ function generateTable(response) {
 	$(table).empty();
 	
 	waypointOrder = response.routes[0].waypoint_order;
-	console.log(waypointOrder.length);
-	console.log(allWaypoints.length);
 	
 	if (allWaypoints.length !== 0) {
 		$("#attraction-table-container").show();
@@ -379,6 +377,10 @@ function getGTravelMode() {
 	return travelMode;
 }
 
+function getMinimumDays() {
+	return Math.ceil(timeTable.reduce(function (a, b) {return a + b; }) / 60 / 60 / 24);
+}
+
 function directionsCallback(response, status) {
 	var minimumDays;
 	if (status === google.maps.DirectionsStatus.OK) {
@@ -388,12 +390,11 @@ function directionsCallback(response, status) {
 		setTimeTable(response);
 		getPlacesArray(response);
 		
-		minimumDays = Math.ceil(timeTable.reduce(function (a, b) {return a + b; }) / 60 / 60 / 24);
-		console.log(minimumDays);
+		minimumDays = Math.ceil(getMinimumDays());
 		
 		$("#min-days").html(minimumDays);
 		if ($("#duration").val() < minimumDays) {
-			$("#duration").val(minimumDays)
+			$("#duration").val(minimumDays);
 		}
 	} else {
 		notifyUser("Routing failed", "The application has failed to plot your route", "danger");
@@ -703,10 +704,6 @@ function removeNotifications() {
 	$("#popup-container").html("");
 }
 
-$(window).on("beforeunload", function () {
-	return saveTrip();
-});
-
 /** Parameter = location
 	sort by rating specified on the third tab
 **/
@@ -936,3 +933,18 @@ function timeCalculation(fromWhichIndex, placeList, response) {
 	// index is a next stop after hotel
 	return {index: indexFinished, list: newList};
 }
+
+$(window).on("beforeunload", function () {
+	return saveTrip();
+});
+
+$(document).on("click", "#inc-days", function () {
+	$("#duration").val(parseInt($("#duration").val(), 10) + 1);
+});
+
+$(document).on("click touchend", "#dec-days", function () {
+	var currentDuration = parseInt($("#duration").val(), 10);
+	if (currentDuration > getMinimumDays()) {
+		$("#duration").val(currentDuration - 1);
+	}
+});
