@@ -312,7 +312,7 @@ function generateTable(response) {
 
 			locationNameCell.innerHTML = currentWaypoint.name;
 			travelInfoCell.innerHTML = currentWaypoint.time + "<br />" + currentWaypoint.distance;
-			infoButtonCell.innerHTML = "<span class='glyphicon glyphicon-info-sign info-button'></span>";
+			infoButtonCell.innerHTML = "<button type='button' class='close' onclick='showAttraction(this)' data-wpnum='" + waypointOrder[i] + "'><span class='glyphicon glyphicon-info-sign'></span></button>";
 			closeButtonCell.innerHTML = "<button type='button' class='close' onclick='deleteAttraction(this)' data-wpnum='" + waypointOrder[i] + "'>&times;</button>";
 		}
 	}
@@ -344,6 +344,19 @@ function generateTable(response) {
 	travelInfoCell.innerHTML = getHumanTotalTravel() + "<br />" + totalDistance;
 	infoButtonCell.innerHTML = "";
 	closeButtonCell.innerHTML = "";
+}
+
+function showAttraction(button) {
+	var waypoint = allWaypoints[$(button).attr("data-wpnum")];
+	
+	console.log(waypoint);
+	
+	map.setCenter(waypoint.location);
+	map.setZoom(15);
+	
+	infoWindow.setContent(waypoint.name);
+	infoWindow.setPosition(waypoint.location);
+	infoWindow.open(map)
 }
 
 function deleteAttraction(button) {
