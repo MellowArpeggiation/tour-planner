@@ -354,7 +354,7 @@ function showAttraction(button) {
 	map.setCenter(waypoint.location);
 	map.setZoom(15);
 	
-	infoWindow.setContent(waypoint.name);
+	infoWindow.setContent("<h5>" + waypoint.name + "</h5>");
 	infoWindow.setPosition(waypoint.location);
 	infoWindow.open(map);
 	
