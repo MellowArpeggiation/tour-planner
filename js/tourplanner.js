@@ -230,19 +230,33 @@ function geocodeAddress(location, assign) {
 }
 
 
-function setMapViewport(arrayOfLocations) {
-	var i, mapBounds;
+function setMapViewport() {
+	var i,
+		mapBounds,
+		allLocations = [];
+	
+	allLocations = [];
+	if (startLocation != undefined && endLocation != "null") {
+		allLocations.push(startLocation);
+	}
+	if (endLocation != undefined && endLocation != "null") {
+		allLocations.push(endLocation);
+	}
+	for (i = 0; i < allWaypoints.length; i += 1) {
+		allLocations.push(allWaypoints[i].location);
+	}
+	
 	mapBounds = new google.maps.LatLngBounds();
-	if (arrayOfLocations.length > 0) {
-		for (i = 0; i < arrayOfLocations.length; i += 1) {
-			if (arrayOfLocations[i] != null) {
-				mapBounds.extend(arrayOfLocations[i]);
+	if (allLocations.length > 0) {
+		for (i = 0; i < allLocations.length; i += 1) {
+			if (allLocations[i] != null) {
+				mapBounds.extend(allLocations[i]);
 			}
 		}
 		
 		map.fitBounds(mapBounds);
 		
-		if (arrayOfLocations.length === 1) {
+		if (allLocations.length === 1) {
 			map.setZoom(reasonableZoom);
 		}
 	}
@@ -378,6 +392,16 @@ function shareRoute() {
 	
 }
 
+function printRoute() {
+	var i;
+	for (i = 0; i < attractionMarkers.length; i += 1) {
+		attractionMarkers[i].setMap(null);
+	}
+	attractionMarkers = [];
+	setMapViewport();
+	setTimeout(window.print, 100);
+}
+
 /** Get the Google travel method **/
 function getGTravelMode() {
 	var travelMode;
@@ -452,7 +476,6 @@ function directionsCallback(response, status) {
 function calculateRoute() {
 	// Function level variables
 	var request,
-		allLocations,
 		waypoints = [],
 		i;
 	
@@ -488,19 +511,7 @@ function calculateRoute() {
 		directionsDisplay.setMap(null);
 	}
 	
-	// Set the maps view
-	allLocations = [];
-	if (startLocation != undefined && endLocation != "null") {
-		allLocations.push(startLocation);
-	}
-	if (endLocation != undefined && endLocation != "null") {
-		allLocations.push(endLocation);
-	}
-	for (i = 0; i < allWaypoints.length; i += 1) {
-		allLocations.push(allWaypoints[i].location);
-	}
-	
-    setMapViewport(allLocations);
+    setMapViewport();
 }
 
 /** Generates and regenerates all the nearby attraction markers **/

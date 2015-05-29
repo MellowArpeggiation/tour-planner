@@ -69,6 +69,7 @@
 		<!-- Custom styling -->
 		<link rel="stylesheet" href="css/base.css" />
 		<link rel="stylesheet" href="css/mapview.css" />
+		<link rel="stylesheet" href="css/print.css" />
 		
 		<!-- Custom page script -->
 		<script src="js/mapproperties.js"></script>
@@ -115,7 +116,14 @@
 						<div class="tab-content">
 							<div role="tabpanel" class="tab-pane active" id="plantour">
 								<div class="page-header hidden-xs">
-									<h3>Plan Tour <button type="button" class="btn btn-default btn-xs" onclick="shareRoute()"><span class="glyphicon glyphicon-share"></span><span class="button-poptext"> Share</span></button></h3>
+									<h3>Plan Tour 
+										<button type="button" class="btn btn-default btn-xs" onclick="shareRoute()">
+											<span class="glyphicon glyphicon-share"></span><span class="button-poptext"> Share</span>
+										</button>
+										<button type="button" class="btn btn-default btn-xs" onclick="printRoute()">
+											<span class="glyphicon glyphicon-print"></span><span class="button-poptext"> Print</span>
+										</button>
+									</h3>
 								</div>
 								<label for="start-location" class="hidden-xs">Overall Travel Plan</label>
 								<div class="form-group">
