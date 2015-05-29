@@ -9,7 +9,8 @@
 	generateTable, setAttractionMarkers, notifyUser, removeNotifications,
 	initMap, initPlanTour, initAttractions, initHotels, loadTrip, saveTrip,
 	calculateTotalDistance, setTimeTable, getPlacesArray, getStartTime,
-	timeCalculation, findPlaceIdAndName, createMarker, addAttraction*/
+	timeCalculation, findPlaceIdAndName, createMarker, addAttraction,
+	getHumanTotalTravel*/
 
 // Initialised in mapproperties.js
 /*global reasonableZoom, mapProperties*/
@@ -340,7 +341,7 @@ function generateTable(response) {
 	closeButtonCell = row.insertCell(3);
 
 	locationNameCell.innerHTML = "Total Distance and Travel Time";
-	travelInfoCell.innerHTML = "00:00<br />" + totalDistance;
+	travelInfoCell.innerHTML = getHumanTotalTravel() + "<br />" + totalDistance;
 	infoButtonCell.innerHTML = "";
 	closeButtonCell.innerHTML = "";
 }
@@ -379,6 +380,36 @@ function getGTravelMode() {
 
 function getMinimumDays() {
 	return Math.ceil(timeTable.reduce(function (a, b) {return a + b; }) / 60 / 60 / 24);
+}
+
+/** Returns a human readable string for total travel time **/
+function getHumanTotalTravel() {
+	var totalTimeSeconds,
+		timeMinutes,
+		timeHours,
+		timeDays,
+		humanReadableTime;
+	
+	totalTimeSeconds = timeTable.reduce(function (a, b) {return a + b; });
+	timeMinutes = Math.round((totalTimeSeconds / 60) % 60);
+	timeHours = Math.round((totalTimeSeconds / 60 / 60) % 60);
+	timeDays = Math.round((totalTimeSeconds / 60 / 60 / 24) % 24);
+	
+	humanReadableTime = "";
+	if (timeDays !== 0) {
+		humanReadableTime += timeDays + " days ";
+	}
+	if (timeHours !== 0) {
+		humanReadableTime += timeHours + " hours ";
+	}
+	if (timeMinutes !== 0) {
+		humanReadableTime += timeMinutes + " mins ";
+	}
+	if (humanReadableTime === "") {
+		humanReadableTime = "0 mins";
+	}
+	
+	return humanReadableTime;
 }
 
 function directionsCallback(response, status) {
