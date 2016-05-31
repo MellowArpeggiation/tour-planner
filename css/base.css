@@ -1,6 +1,48 @@
+body {
+	padding-top: 70px;
+}
+
+.navbar-brand img {
+	width: 24px;
+	display: inline;
+}
+
+.map-container {
+    position: relative;
+    width: 100%;
+    height: 95%;
+	margin-bottom: 8px;
+}
+.map-container .map-canvas {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+	border-radius: 8px;
+}
+
+#popup-container {
+	position: fixed;
+	top: 70px;
+	
+	left: 0;
+	right: 0;
+	padding-left: 15px;
+	padding-right: 15px;
+	
+	z-index: 1000;
+}
+
+.page-header {
+	border-bottom-color: #ccc;
+	margin-top: 20px;
+}
+
 .team-member {
     margin-bottom: 50px;
     text-align: center;
+	max-width: 433px;
 }
 
 .team-member img {
@@ -56,4 +98,203 @@ h3.section-subheading {
 	font-family: Georgia, "Times New Roman", Times, serif;
 	font-style: italic;
 	font-size: 20px;
+}
+
+input[type="date"], input[type="time"], input[type="datetime-local"], input[type="month"] {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	line-height: 1.42857143;
+}
+
+button > .button-poptext {
+	display: none;
+}
+
+button:hover > .button-poptext {
+	display: initial;
+}
+
+.panel-title .close {
+	font-size: 24px;
+	margin-top: -3px;
+}
+
+.well-light {
+	background-color: #fff;
+}
+
+#hotel-rating button {
+	padding-left: 0;
+	padding-right: 0;
+	text-align: center;
+}
+
+#hotel-rating span {
+	letter-spacing: -5px;
+	font-size: 11px;
+}
+
+#footer-tabs {
+	background-color: #222;
+	border: 1px solid transparent;
+	border-width: 1px 0 0;
+	border-color: #101010;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 50px;
+	z-index: 1029;
+}
+
+#footer-tabs a {
+	color: #9d9d9d;
+	float: left;
+	width: 33.33%;
+	height: 50px;
+	font-size: 12px;
+	padding: 6px 15px ;
+	text-align: center;
+}
+
+#footer-tabs span {
+	font-size: 20px;
+}
+
+#footer-tabs a:hover {
+	text-decoration: none;
+	color: #fff;
+}
+
+#footer-tabs a.active {
+	background-color: #2b167b;
+	color: #fff;
+}
+
+.slider-handle {
+	background-image: none;
+	background-color: #fff;
+	border: 1px solid #ccc;
+}
+
+.slider-selection {
+	background-image: none;
+	background-color: #08CA74;
+}
+
+.affix {
+  top: 70px;
+  width: 213px;
+}
+
+.affix-bottom {
+  position: absolute;
+  width: 213px;
+}
+
+.info-button {
+	float: right;
+	font-size: 21px;
+	font-weight: bold;
+	line-height: 1;
+	color: #000;
+	text-shadow: 0 1px 0 #fff;
+	opacity: .4;
+	filter: alpha(opacity=40);
+}
+
+[type="tel"] {
+	text-align: center;
+}
+
+/* Screen width specific CSS */
+/** XS **/
+@media (max-width: 767px) {
+	.map-container {
+		width: 100%;
+		height: 500px;
+	}
+	.map-container .map-canvas {
+		border-radius: 0;
+	}
+	.col-map {
+		padding: 0;
+	}
+	body {
+		padding-top: 50px;
+	}
+}
+/** SM+ **/
+@media (min-width: 768px) {
+	.scrollable-table {
+		height: 350px;
+		overflow-y: auto;
+	}
+}
+/** SM **/
+@media (min-width: 768px) and (max-width: 991px) {
+	
+}
+/** MD **/
+@media (min-width: 992px) and (max-width: 1199px) {
+	
+}
+/** LG **/
+@media (min-width: 1200px) {
+	.affix {
+		width: 263px;
+	}
+	.affix-bottom {
+		width: 263px;
+	}
+}
+
+/** Screen height for mobiles CSS **/
+/* Smaller than i4 or landscape */
+@media (max-height: 479px) and (max-width: 767px) {
+	.map-container {
+		height: 0;
+	}
+}
+/* i4 */
+@media (min-height: 480px) and (max-width: 767px) {
+	.map-container {
+		height: 160px;
+	}
+}
+/* Nexus S */
+@media (min-height: 533px) and (max-width: 767px) {
+	.map-container {
+		height: 220px;
+	}
+}
+/* i5 */
+@media (min-height: 568px) and (max-width: 767px) {
+	.map-container {
+		height: 250px;
+	}
+}
+/* Galaxy S4 */
+@media (min-height: 640px) and (max-width: 767px) {
+	.map-container {
+		height: 320px;
+	}
+}
+/* i6 */
+@media (min-height: 667px) and (max-width: 767px) {
+	.map-container {
+		height: 350px;
+	}
+}
+/* i6+ */
+@media (min-height: 736px) and (max-width: 767px) {
+	.map-container {
+		height: 420px;
+	}
+}
+/* Droid 3, 4 */
+@media (min-height: 960px) and (max-width: 767px) {
+	.map-container {
+		height: 640px;
+	}
 }

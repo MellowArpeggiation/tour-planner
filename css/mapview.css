@@ -1,62 +1,11 @@
-#map-canvas {
-	height: 100%;
-	float: left;
-	width: 70%;
+@media (min-width: 768px) {
+	html, body, .container-fluid, .row, .col-map {
+		height: 100%;
+	}
 }
 
-#control-panel {
-	padding: 20px;
-	float: right;
-	width: 30%;
-	text-align: left;
-}
-
-#overlay {
-	display: none;
-	opacity: 0.5;
-	background-color: black;
-	position: fixed;
-	width: 100%;
-	height: 100%;
-}
-
-#popup {
-	display: none;
-	background-color: white;
-	position: fixed;
-	width: 70%;
-	height: 70%;
-	top: 15%;
-	left: 15%;
-}
-
-#close-popup {
-	position: absolute;
-	right: 10px;
-	top: 10px;
-	height: 30px;
-	width: 30px;
-	cursor: pointer;
-	font-size: 25px;
-	color: #5A5B9F;
-	text-align:center;
-}
-
-/* Fixes draw order bug */
-.input-group .form-control {
-	z-index: initial;
-}
-
-/* Screen width specific CSS */
 @media (max-width: 767px) {
-	
-}
-@media (min-width: 768px) and (max-width: 991px) {
-	
-}
-@media (min-width: 992px) and (max-width: 1199px) {
-	
-}
-@media (min-width: 1200px) {
-	
+	body {
+		padding-bottom: 50px;	
+	}
 }

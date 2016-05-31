@@ -1,19 +1,44 @@
 <!DOCTYPE html>
 <html lang="en-au">
 	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-touch-fullscreen" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		
+		<!-- Favicon -->
+		<link rel="apple-touch-icon" sizes="57x57" href="img/favicon/apple-icon-57x57.png">
+		<link rel="apple-touch-icon" sizes="60x60" href="img/favicon/apple-icon-60x60.png">
+		<link rel="apple-touch-icon" sizes="72x72" href="img/favicon/apple-icon-72x72.png">
+		<link rel="apple-touch-icon" sizes="76x76" href="img/favicon/apple-icon-76x76.png">
+		<link rel="apple-touch-icon" sizes="114x114" href="img/favicon/apple-icon-114x114.png">
+		<link rel="apple-touch-icon" sizes="120x120" href="img/favicon/apple-icon-120x120.png">
+		<link rel="apple-touch-icon" sizes="144x144" href="img/favicon/apple-icon-144x144.png">
+		<link rel="apple-touch-icon" sizes="152x152" href="img/favicon/apple-icon-152x152.png">
+		<link rel="apple-touch-icon" sizes="180x180" href="img/favicon/apple-icon-180x180.png">
+		<link rel="icon" type="image/png" sizes="192x192"  href="img/favicon/android-icon-192x192.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="img/favicon/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="96x96" href="img/favicon/favicon-96x96.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="img/favicon/favicon-16x16.png">
+		<link rel="manifest" href="img/favicon/manifest.json">
+		<meta name="msapplication-TileColor" content="#ffffff">
+		<meta name="msapplication-TileImage" content="img/favicon/ms-icon-144x144.png">
+		<meta name="theme-color" content="#ffffff">
+		<!-- Favicon end -->
+		
+		<!-- TODO: Autogenerate a title based on route -->
 		<title>Help</title>
 		
 		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js" type="text/javascript"></script>
 		
 		<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 		<script src="bootstrap/js/bootstrap.min.js"></script>
 		
 		<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!-- WARNING: Respond.js doesn"t work if you view the page via file:// -->
 		<!--[if lt IE 9]>
 		<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -21,15 +46,28 @@
 	
 		<!-- Custom styling -->
 		<link rel="stylesheet" href="css/base.css" />
+		<link href="css/help.css" rel="stylesheet" />
 		
 		<link href="http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300italic,300,500,400italic,500italic,700,900,900italic,700italic" rel="stylesheet" type="text/css">
 		
 		<!-- Font Awesome CSS -->
 		<link href="http://designers.hubspot.com/hs-fs/hub/327485/file-2054199286-css/font-awesome.css" rel="stylesheet" />
+		
+		<!-- affix init -->
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$("#affix-nav").affix({
+					offset: {
+						top: 0
+					}
+				});
+			});
+		</script>
+		
 	</head>
-	<body>
-		<nav class="navbar navbar-inverse">
-			<div class="container">
+	<body data-spy="scroll" data-target=".scrollspy">
+		<nav class="navbar navbar-inverse navbar-fixed-top">
+			<div class="container-fluid">
 				<div class="navbar-header">
 					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
 						<span class="sr-only">Toggle navigation</span>
@@ -37,7 +75,7 @@
 						<span class="icon-bar"></span>
 						<span class="icon-bar"></span>
 					</button>
-					<a class="navbar-brand" href="index.html">Pointour</a>
+					<a class="navbar-brand" href="index.html"><img alt="SIT302 Solutions" src="img/brand-icon.png" /> Pointour</a>
 				</div>
 				<div id="navbar" class="navbar-collapse collapse">
 					<ul class="nav navbar-nav">
@@ -51,5 +89,76 @@
 				</div>
 			</div>
 		</nav>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9" role="main">
+					<section id="getting-started">
+						<div class="page-header">
+							<h2>Getting started</h2>
+						</div>
+						<p>Hi, everybody. This application based on different people choose different ways' travels, it give us a better way to choose.</p>
+					</section>
+					<section id="how-to-use">
+						<div class="page-header">
+							<h2>How to use this app</h2>
+						</div>
+						<section id="plan-tour">
+							<h3>Plan Tour</h3>
+							<p>First of all, choose a location, then select a destination place you can to go.</p>
+                            <p>And also, you can choose a heading time, our application will select a better way to help you go to your destination.</p>
+                            <p>Our application provides 4 ways for you to travel, driving, walking, cycling and transsit. It will gives you the best way to arrive the destination.</p>
+						</section>
+						<section id="visit-attractions">
+							<h3>Visit Attractions</h3>
+                            <p>You can choose the attactions and decide where you will travel. At the Tour Attractions page, type the places you can to go, the press the button.</p>
+							<p>The attaction will be below. Then go back to the frout page, select the start location and destination, the way will show out the best way to go to the destination and also include the places you can to be.</p>
+						</section>
+						<section id="night-stops">
+							<h3>Night Stops</h3>
+							<p>You can also choose a hotel by our progarm, select the days you want to stay. you can select the rating of hotel, and also the cost per night.</p>
+						</section>
+					</section>
+					<section id="troubleshooting">
+						<div class="page-header">
+							<h2>Troubleshooting</h2>
+							
+							<p>If you have any trouble with the application, please contact us.</p>
+						</div>
+					</section>
+				</div>
+				<div class="col-md-3 scrollspy" role="complementary">
+					<ul id="affix-nav" class="nav hidden-xs hidden-sm" data-spy="affix">
+						<li>
+							<a href="#getting-started">Getting started</a>
+						</li>
+						<li>
+							<a href="#how-to-use">How to use this app</a>
+							<ul class="nav">
+								<li>
+									<a href="#plan-tour">Plan Tour</a>
+								</li>
+								<li>
+									<a href="#visit-attractions">Visit Attractions</a>
+								</li>
+								<li>
+									<a href="#night-stops">Night Stops</a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a href="#troubleshooting">Troubleshooting</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 text-center">
+					<h3>
+						<small>Didn't find what you were looking for?</small><br />
+						<small>Email our development team</small>
+					</h3>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

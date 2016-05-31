@@ -1,0 +1,30 @@
+body {
+	position: relative;
+}
+
+.nav .active {
+	font-weight: bold;
+}
+
+.nav .active > a {
+	border-left: 2px solid black;
+}
+
+.nav .nav {
+	display: none;
+	padding-left: 20px;
+}
+
+.nav .active .nav {
+	display: block;
+}
+
+.nav .nav a {
+	font-weight: normal;
+	font-size: .85em;
+}
+
+.nav .nav .active a {
+	font-weight: bold;
+	border-left: 2px solid black;
+}
