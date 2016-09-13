@@ -1,0 +1,11 @@
+@media (min-width: 768px) {
+	html, body, .container-fluid, .row, .col-map {
+		height: 100%;
+	}
+}
+
+@media (max-width: 767px) {
+	body {
+		padding-bottom: 50px;	
+	}
+}
