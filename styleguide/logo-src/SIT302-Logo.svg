@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="SIT302-Logo.svg"
+   inkscape:version="0.48.5 r10040"
+   version="1.1"
+   id="svg2985"
+   height="600px"
+   width="800px"
+   inkscape:export-filename="C:\Users\gpaton\Pictures\SIT302 Project\SIT302-Logo.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs2987">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 300 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="800 : 300 : 1"
+       inkscape:persp3d-origin="400 : 200 : 1"
+       id="perspective3043" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="4"
+     inkscape:cx="157.57569"
+     inkscape:cy="246.01194"
+     inkscape:current-layer="layer1"
+     inkscape:document-units="px"
+     showgrid="false"
+     inkscape:window-width="1366"
+     inkscape:window-height="706"
+     inkscape:window-x="-8"
+     inkscape:window-y="393"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata2990">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer">
+    <path
+       style="fill:#08ca74;fill-opacity:1;stroke:none"
+       d="M 154.59375 309.78125 C 115.62268 309.78125 84.03125 325.36172 84.03125 344.5625 C 84.03125 363.76328 115.62268 379.3125 154.59375 379.3125 C 193.56482 379.3125 225.15625 363.76328 225.15625 344.5625 C 225.15625 325.36172 193.56482 309.78125 154.59375 309.78125 z M 154.125 317.40625 C 187.28388 317.40625 214.15625 329.49518 214.15625 344.375 C 214.15625 359.25482 187.28388 371.3125 154.125 371.3125 C 120.96612 371.3125 94.09375 359.25482 94.09375 344.375 C 94.09375 329.49518 120.96612 317.40625 154.125 317.40625 z "
+       id="path3959" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot2993"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#2b167b;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(101.66667,-5)"><flowRegion
+         id="flowRegion2995"><rect
+           id="rect2997"
+           width="788.33331"
+           height="240"
+           x="5"
+           y="190"
+           style="fill:#2b167b;fill-opacity:1" /></flowRegion><flowPara
+         id="flowPara2999"
+         style="font-size:144px;font-style:normal;font-variant:normal;font-weight:300;font-stretch:normal;text-align:center;text-anchor:middle;font-family:NK57 Monospace Lt;-inkscape-font-specification:NK57 Monospace Lt Light;fill:#2b167b;fill-opacity:1">SiT302</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-size:40px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#08ca74;fill-opacity:0.94117647;stroke:none;font-family:Sans"
+       x="403.33334"
+       y="371.66669"
+       id="text3001"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3003"
+         x="403.33334"
+         y="371.66669"
+         style="font-size:64px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:NK57 Monospace Bk;-inkscape-font-specification:NK57 Monospace Bk;fill:#08ca74;fill-opacity:0.94117647">Solutions</tspan></text>
+    <path
+       transform="matrix(0.4449433,0,0,0.4449433,100.96881,191.65129)"
+       sodipodi:type="arc"
+       style="fill:#2b167b;fill-opacity:1;stroke:none"
+       id="path3959-8"
+       sodipodi:cx="118.5877"
+       sodipodi:cy="344.55768"
+       sodipodi:rx="70.563362"
+       sodipodi:ry="34.766083"
+       d="m 189.15106,344.55768 a 70.563362,34.766083 0 1 1 -141.126722,0 70.563362,34.766083 0 1 1 141.126722,0 z" />
+    <path
+       style="fill:#dfdfdf;fill-opacity:1;stroke:none"
+       d="m 118.5106,259.78414 35.20917,85.78492 1.73431,-0.0322 -27.65147,-89.19494 z"
+       id="path3949"
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="ccccc" />
+    <path
+       sodipodi:type="arc"
+       style="fill:#08ca74;fill-opacity:1;stroke:none"
+       id="path3955"
+       sodipodi:cx="78.371002"
+       sodipodi:cy="221.10861"
+       sodipodi:rx="41.247894"
+       sodipodi:ry="41.247894"
+       d="m 119.6189,221.10861 a 41.247894,41.247894 0 1 1 -82.495792,0 41.247894,41.247894 0 1 1 82.495792,0 z"
+       transform="matrix(0.66071427,0,0,0.66071427,68.070388,97.427313)" />
+  </g>
+</svg>
