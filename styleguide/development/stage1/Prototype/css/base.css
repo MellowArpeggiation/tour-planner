@@ -1,0 +1,57 @@
+html, body, #map-canvas {
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+#map-canvas{
+	float: left;
+	width: 70%;
+	height: 100%;
+}
+#control-panel{
+	padding: 20px;
+	float: right;
+	width: 30%;
+	text-align: left;
+}
+#overlay{
+	display: none;
+	opacity: 0.5;
+	background-color: black;
+	position: fixed;
+	width: 100%;
+	height: 100%;
+}
+#popup{
+	display: none;
+	background-color: white;
+	position: fixed;
+	width: 70%;
+	height: 70%;
+	top: 15%;
+	left: 15%;
+}
+#close-popup{
+	opacity: 0.5;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	height: 30px;
+	width: 30px;
+	cursor: pointer;
+	font-size: 25px;
+	color: #5A5B9F;
+	text-align:center;
+}
+#close-popup:hover{
+	opacity: 1;
+}
+.inner-container{
+	margin: 20px;
+}
+#travel-mode{
+	width:50%;
+}
+.text-center{
+	clear:both;
+}

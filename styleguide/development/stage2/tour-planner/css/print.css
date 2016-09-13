@@ -1,0 +1,13 @@
+@media print {
+	#plantour, #plannights, #attractionListContainer, #footer-tabs, nav, .close {
+		display: none !important;
+	}
+	
+	#planstops {
+		display: block !important;
+	}
+	
+	.map-container {
+		height: 12cm;
+	}
+}
